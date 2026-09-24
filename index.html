@@ -149,7 +149,7 @@
        <span>›</span>
       </button>
 
-      <button class="menu-row" data-coming="Lokalen &amp; adressen">
+      <button class="menu-row" id="venuesButton">
        <span class="menu-row-text">
         <strong>Lokalen &amp; adressen</strong>
         <small>Overzicht van de speellokalen</small>
@@ -198,6 +198,40 @@
 
  <div id="matchDetailContent">
   <div class="loading-box">Wedstrijd laden...</div>
+ </div>
+</section>
+
+<section class="screen" hidden="" id="teamDetailScreen">
+ <button class="text-button" id="teamDetailBackButton" type="button">← Terug</button>
+
+ <div class="section-heading">
+  <span class="eyebrow">Competitie</span>
+  <h2 id="teamDetailTitle">Ploeggegevens</h2>
+  <p class="muted" id="teamDetailDescription">Ploeg laden...</p>
+ </div>
+
+ <div id="teamDetailContent">
+  <div class="loading-box">Ploeggegevens laden...</div>
+ </div>
+</section>
+
+<section class="screen" hidden="" id="venuesScreen">
+ <button class="text-button" id="venuesBackButton" type="button">
+  ← Terug naar Overige
+ </button>
+
+ <div class="section-heading">
+  <span class="eyebrow">ADL2000</span>
+  <h2>Lokalen &amp; adressen</h2>
+  <p class="muted">
+   Bekijk de speellokalen van alle ploegen.
+  </p>
+ </div>
+
+ <div id="venuesContent">
+  <div class="loading-box">
+   Speellokalen laden...
+  </div>
  </div>
 </section>
 

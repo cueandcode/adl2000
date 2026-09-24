@@ -2048,3 +2048,1044 @@ button {
     font-size: 8px;
   }
 }
+
+
+/* =========================================================
+   MOBIELE LEESBAARHEID - 24/09/2026
+   ========================================================= */
+
+/* Individueel klassement: groter + positie en speler blijven staan */
+.individual-stand-table {
+  overflow-x: auto;
+  position: relative;
+}
+
+.individual-stand-row {
+  grid-template-columns: 42px 190px 175px 55px 62px 55px 72px;
+  min-width: 651px;
+  min-height: 58px;
+  gap: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.individual-stand-row > span {
+  display: flex;
+  align-items: center;
+  min-height: 58px;
+  padding: 10px 9px;
+  background: var(--surface);
+}
+
+.individual-stand-header {
+  min-height: 46px;
+  font-size: 10px;
+}
+
+.individual-stand-header > span {
+  min-height: 46px;
+  background: #edf4f0;
+}
+
+.individual-stand-row > span:nth-child(1),
+.individual-stand-row > span:nth-child(2) {
+  position: sticky;
+  z-index: 3;
+}
+
+.individual-stand-row > span:nth-child(1) {
+  left: 0;
+  justify-content: center;
+}
+
+.individual-stand-row > span:nth-child(2) {
+  left: 42px;
+  z-index: 2;
+  box-shadow: 8px 0 10px -10px rgba(17, 55, 37, .55);
+}
+
+.individual-stand-row.my-team > span {
+  background: #e4f6eb;
+  color: var(--green-dark);
+}
+
+/* Andere reeksen: Ploegen / Individueel */
+.series-stand-mode {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin: 0 0 16px;
+  padding: 4px;
+  border: 1px solid #d5e2db;
+  border-radius: 15px;
+  background: #e7efeb;
+}
+
+.series-stand-mode .primary-button,
+.series-stand-mode .secondary-button {
+  min-height: 43px;
+  margin: 0;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: 11px;
+  box-shadow: none;
+  font-size: 13px;
+}
+
+.series-stand-mode .secondary-button {
+  background: transparent;
+  color: #617269;
+}
+
+/* Wedstrijddetails: spelers onder elkaar zodat alles groter kan */
+.match-game-card {
+  padding: 16px;
+}
+
+.match-game-top {
+  margin-bottom: 14px;
+}
+
+.match-game-top .card-label,
+.match-game-top strong {
+  font-size: 13px;
+}
+
+.match-game-versus {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.match-game-vs {
+  min-height: 22px;
+  font-size: 10px;
+}
+
+.match-game-player {
+  padding: 14px 12px;
+  border-radius: 14px;
+}
+
+.match-game-side {
+  margin-bottom: 5px;
+  font-size: 9px;
+}
+
+.match-game-name {
+  min-height: 0;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.match-game-stats {
+  gap: 6px;
+  margin-top: 13px;
+}
+
+.match-game-stats small {
+  font-size: 8px;
+}
+
+.match-game-stats b {
+  margin-top: 3px;
+  font-size: 11px;
+}
+
+/* Carrièrehistoriek: grotere tabel, horizontaal schuifbaar */
+.player-history-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.player-history-row {
+  grid-template-columns: 92px 55px 78px 58px 42px 42px 42px 68px;
+  min-width: 477px;
+  min-height: 55px;
+  gap: 0;
+  padding: 0;
+  font-size: 12px;
+}
+
+.player-history-row > span {
+  padding: 10px 7px;
+}
+
+.player-history-header {
+  min-height: 43px;
+  font-size: 9px;
+}
+
+/* Records: niet meer samenpersen; grotere tekst en horizontaal schuiven */
+.records-category-card {
+  padding: 15px 12px;
+}
+
+.records-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.records-row {
+  grid-template-columns: 38px 235px 65px 65px 75px;
+  min-width: 478px;
+  min-height: 68px;
+  gap: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.records-row > span {
+  padding: 10px 8px;
+}
+
+.records-header {
+  min-height: 44px;
+  font-size: 10px;
+}
+
+.records-row strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.records-row small {
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+@media (max-width: 390px) {
+  .match-game-card {
+    padding: 14px 12px;
+  }
+
+  .match-game-player {
+    padding: 13px 10px;
+  }
+
+  .match-game-name {
+    font-size: 15px;
+  }
+
+  .player-history-row {
+    grid-template-columns: 92px 55px 78px 58px 42px 42px 42px 68px;
+    padding: 0;
+    font-size: 12px;
+  }
+}
+
+/* =========================================================
+   WEDSTRIJDDETAIL - STATISTIEKEN GROTER + APARTE CELLEN
+   ========================================================= */
+
+.match-game-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  margin-top: 14px;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+
+  background: #f7faf8;
+  overflow: hidden;
+}
+
+.match-game-stats span {
+  min-width: 0;
+  padding: 9px 3px 8px;
+
+  text-align: center;
+
+  border-right: 1px solid var(--border);
+}
+
+.match-game-stats span:last-child {
+  border-right: 0;
+}
+
+.match-game-stats small {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: #718078;
+
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.match-game-stats b {
+  display: block;
+
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 14px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+/* =========================================================
+   WEDSTRIJDDETAIL - 6 DUIDELIJKE STATISTIEKCELLEN
+   ========================================================= */
+
+.match-game-stats {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+  margin-top: 14px;
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  background: #f7faf8;
+  overflow: hidden;
+}
+
+.match-game-stats span {
+  display: block;
+  min-width: 0;
+
+  padding: 9px 2px 8px;
+
+  text-align: center;
+
+  border-right: 1px solid var(--border);
+}
+
+.match-game-stats span:last-child {
+  border-right: 0;
+}
+
+.match-game-stats small {
+  display: block;
+
+  margin: 0 0 5px;
+
+  color: #718078;
+
+  font-size: 8px;
+  line-height: 1;
+  font-weight: 900;
+
+  text-transform: uppercase;
+}
+
+.match-game-stats b {
+  display: block;
+
+  margin: 0;
+
+  color: var(--text);
+
+  font-size: 14px;
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+/* PTN visueel licht onderscheiden:
+   dit zijn de punten die de speler voor de ploeg oplevert */
+.match-game-stats .match-game-ptn {
+  background: var(--green-soft);
+}
+
+.match-game-stats .match-game-ptn small,
+.match-game-stats .match-game-ptn b {
+  color: var(--green-dark);
+}
+
+/* =========================================================
+   AANKLIKBARE PLOEGNAMEN
+   ========================================================= */
+
+.team-link {
+  display: block;
+  width: 100%;
+  min-width: 0;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+
+  text-align: left;
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.team-link:hover {
+  color: var(--green);
+}
+
+.team-link:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   PLOEGDETAIL
+   ========================================================= */
+
+/* Bovenste ploegkaart */
+
+.team-detail-summary h3 {
+  margin-top: 5px;
+  font-size: 21px;
+  line-height: 1.2;
+}
+
+.team-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.team-detail-meta > span {
+  display: flex;
+  min-width: 0;
+  min-height: 62px;
+  padding: 10px 7px;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #d7e7de;
+  border-radius: 12px;
+
+  background: var(--green-soft);
+  text-align: center;
+}
+
+.team-detail-meta small {
+  display: block;
+  margin-bottom: 5px;
+
+  color: var(--muted);
+
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.team-detail-meta strong {
+  color: var(--green-dark);
+
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+
+/* Titels in kaarten */
+
+.team-detail-heading {
+  margin-top: 5px;
+
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+
+/* Speellokaal */
+
+.team-detail-address {
+  margin-top: 8px;
+
+  color: var(--muted);
+
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.team-detail-contact {
+  display: flex;
+  align-items: center;
+
+  width: fit-content;
+
+  margin-top: 13px;
+
+  color: var(--green-dark);
+
+  font-size: 14px;
+  font-weight: 800;
+
+  text-decoration: none;
+}
+
+.team-detail-route {
+  display: flex;
+  width: 100%;
+  min-height: 45px;
+
+  margin-top: 15px;
+  padding: 11px 14px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #c6dfd1;
+  border-radius: 12px;
+
+  background: var(--green-soft);
+
+  color: var(--green-dark);
+
+  font-size: 13px;
+  font-weight: 900;
+
+  text-decoration: none;
+}
+
+
+/* Kapitein */
+
+.team-detail-contact-list {
+  display: grid;
+  gap: 8px;
+
+  margin-top: 13px;
+}
+
+.team-detail-contact-list a {
+  display: flex;
+  align-items: center;
+
+  min-height: 42px;
+  padding: 10px 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 11px;
+
+  background: var(--surface-soft);
+
+  color: var(--green-dark);
+
+  font-size: 13px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  overflow-wrap: anywhere;
+}
+
+
+/* Spelers titel */
+
+.team-detail-player-heading {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.team-detail-player-heading h3 {
+  margin-top: 4px;
+
+  font-size: 20px;
+}
+
+.team-detail-player-heading > strong {
+  display: grid;
+
+  width: 34px;
+  height: 34px;
+
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: var(--green-soft);
+
+  color: var(--green-dark);
+
+  font-size: 14px;
+}
+
+
+/* Spelerslijst */
+
+.team-detail-players {
+  display: grid;
+  gap: 7px;
+}
+
+.team-detail-player {
+  display: flex;
+
+  width: 100%;
+  min-height: 57px;
+
+  padding: 10px 11px;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background: #f8fbf9;
+
+  color: var(--text);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.team-detail-player:active {
+  transform: scale(.99);
+}
+
+.team-detail-player > span:first-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.team-detail-player > span:first-child > strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.team-detail-player > span:first-child > small {
+  width: fit-content;
+
+  padding: 3px 7px;
+
+  border-radius: 7px;
+
+  background: var(--green-soft);
+
+  color: var(--green-dark);
+
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+
+/* TSP rechts */
+
+.team-player-tsp {
+  display: grid;
+
+  min-width: 48px;
+
+  padding: 7px 8px;
+
+  place-items: center;
+
+  border-radius: 10px;
+
+  background: var(--green-soft);
+
+  color: var(--green-dark);
+
+  text-align: center;
+}
+
+.team-player-tsp small {
+  font-size: 8px;
+  font-weight: 900;
+}
+
+.team-player-tsp strong {
+  margin-top: 1px;
+
+  font-size: 17px;
+  line-height: 1;
+}
+
+
+/* Klikbare ploegnaam in de stand */
+
+.team-link {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  color: inherit;
+
+  font: inherit;
+  font-weight: 700;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.team-link:hover {
+  color: var(--green);
+}
+
+.team-link:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* =========================================================
+   LOKALEN & ADRESSEN
+   ========================================================= */
+
+.venues-segments {
+  margin-bottom: 18px;
+}
+
+.venues-segments .segment {
+  min-width: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+
+/* Lijst */
+
+#venuesList {
+  display: grid;
+  gap: 12px;
+}
+
+
+/* Kaart */
+
+.venue-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+
+/* Ploeg bovenaan */
+
+.venue-team-button {
+  position: relative;
+
+  display: block;
+  width: 100%;
+
+  margin: 0;
+  padding: 15px 46px 13px 16px;
+
+  border: 0;
+  border-bottom: 1px solid var(--border);
+
+  background: var(--green-soft);
+
+  color: var(--text);
+  text-align: left;
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.venue-team-button .card-label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.venue-team-button > strong {
+  display: block;
+
+  color: var(--green-dark);
+
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 900;
+}
+
+.venue-arrow {
+  position: absolute;
+
+  top: 50%;
+  right: 17px;
+
+  color: var(--green);
+
+  font-size: 26px;
+  line-height: 1;
+
+  transform: translateY(-50%);
+}
+
+
+/* Lokaal */
+
+.venue-info {
+  padding: 15px 16px 13px;
+}
+
+.venue-info h3 {
+  margin: 0 0 5px;
+
+  color: var(--text);
+
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.venue-info p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+
+/* Speeldag + uur */
+
+.venue-meta {
+  display: flex;
+  gap: 7px;
+
+  margin-top: 12px;
+}
+
+.venue-meta span {
+  display: inline-flex;
+
+  min-height: 30px;
+  padding: 6px 10px;
+
+  align-items: center;
+
+  border-radius: 9px;
+
+  background: var(--surface-soft);
+
+  color: var(--green-dark);
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+
+/* Actieknoppen */
+
+.venue-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+
+  padding: 0 16px 16px;
+}
+
+.venue-actions a {
+  display: flex;
+
+  min-height: 42px;
+  padding: 9px 12px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #c9ded2;
+  border-radius: 11px;
+
+  background: #fff;
+
+  color: var(--green-dark);
+
+  font-size: 12px;
+  font-weight: 900;
+
+  text-decoration: none;
+}
+
+.venue-actions a:last-child {
+  border-color: var(--green);
+
+  background: var(--green);
+
+  color: #fff;
+}
+
+
+/* Als er maar één actieknop is */
+
+.venue-actions a:only-child {
+  grid-column: 1 / -1;
+}
+
+
+/* Interactie */
+
+.venue-team-button:active,
+.venue-actions a:active {
+  transform: scale(.99);
+}
+
+.venue-team-button:focus-visible,
+.venue-actions a:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+
+
+/* Kleine schermen */
+
+@media (max-width: 380px) {
+  .venue-info h3 {
+    font-size: 16px;
+  }
+
+  .venue-team-button > strong {
+    font-size: 15px;
+  }
+
+  .venue-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .venue-actions a:only-child {
+    grid-column: auto;
+  }
+}
+
+/* =========================================================
+   KVA - KALENDER
+   ========================================================= */
+
+.calendar-match.calendar-match-kva {
+  border-color: #d8c37a;
+  background:
+    linear-gradient(
+      135deg,
+      #fffdf5,
+      #f8f3df
+    );
+}
+
+.calendar-match.calendar-match-kva.my-match {
+  border-color: #d8c37a;
+  background:
+    linear-gradient(
+      135deg,
+      #fffdf5,
+      #f8f3df
+    );
+}
+
+.calendar-kva-badge {
+  display: inline-flex;
+  align-items: center;
+
+  margin-left: 6px;
+  padding: 3px 6px;
+
+  border: 1px solid #d8c37a;
+  border-radius: 6px;
+
+  background: #f3e6ad;
+  color: #65520b;
+
+  font-size: 8px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: .04em;
+  vertical-align: middle;
+}
+
+/* =========================================================
+   KVA - EIGEN POULE
+   ========================================================= */
+
+.series-button.series-kva-own {
+  border-color: #d8c37a;
+
+  background:
+    linear-gradient(
+      135deg,
+      #fffdf5,
+      #f8f3df
+    );
+}
+
+.series-button.series-kva-own strong {
+  color: #65520b;
+}
+
+.series-button.series-kva-own span {
+  color: #78651b;
+}
+
+/* KVA knock-out: compacte faseknoppen */
+.kva-knockout-heading {
+  margin-top: 22px;
+}
+
+.kva-phase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.kva-phase-button {
+  min-width: 0;
+  min-height: 54px;
+  padding: 10px 8px;
+  border: 1px solid #d8c37a;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fffdf5 0%, #f8f3df 100%);
+  color: #04532d;
+  font: inherit;
+  cursor: pointer;
+  text-align: center;
+}
+
+.kva-phase-button strong {
+  display: block;
+  font-size: 0.95rem;
+  line-height: 1.15;
+}
+
+.kva-phase-button:active {
+  transform: translateY(1px);
+}
+
+@media (max-width: 390px) {
+  .kva-phase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

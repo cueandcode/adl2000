@@ -11,7 +11,9 @@ const screens = {
   more: document.getElementById('moreScreen'),
   records: document.getElementById('recordsScreen'),
   playerStats: document.getElementById('playerStatsScreen'),
-  matchDetail: document.getElementById('matchDetailScreen')
+  matchDetail: document.getElementById('matchDetailScreen'),
+  teamDetail: document.getElementById('teamDetailScreen'),
+  venues: document.getElementById('venuesScreen')
 };
 
 const bottomNav = document.getElementById('bottomNav');
@@ -24,6 +26,7 @@ let calendarMode = 'team';
 let calendarStatusFilter = 'all';
 let selectedSeries = null;
 let standMode = 'ploegen';
+let seriesStandMode = 'ploegen';
 let playerSelectMode = 'change';
 let viewedPlayer = null;
 let matchDetailReturn = 'home';
@@ -58,7 +61,17 @@ function showOnly(name) {
   });
 
   bottomNav.hidden =
-    !['home', 'stand', 'calendar', 'series', 'more', 'records', 'playerStats', 'matchDetail'].includes(name);
+  ![
+    'home',
+    'stand',
+    'calendar',
+    'series',
+    'more',
+    'records',
+    'playerStats',
+    'matchDetail',
+    'teamDetail'
+  ].includes(name);
 }
 
 
@@ -829,9 +842,13 @@ function renderStand(rows) {
         ${esc(row.positie)}
       </span>
 
-      <span class="stand-team">
-        ${esc(row.ploeg)}
-      </span>
+      <button
+  class="stand-team team-link"
+  type="button"
+  data-team-name="${esc(row.ploeg)}"
+>
+  ${esc(row.ploeg)}
+</button>
 
       <span class="stand-gsp">
         ${esc(row.gsp)}
@@ -845,6 +862,19 @@ function renderStand(rows) {
         ${esc(row.punten)}
       </span>
     `;
+
+const teamButton =
+  element.querySelector('[data-team-name]');
+
+if (teamButton) {
+  teamButton.addEventListener('click', () => {
+    openTeamDetail(
+      currentPlayer.afdeling,
+      row.ploeg,
+      'stand'
+    );
+  });
+}
 
     table.appendChild(element);
   });
@@ -909,34 +939,148 @@ async function renderCalendar(calendar) {
           normalize(match.thuisploeg) === normalize(currentPlayer.team) ||
           normalize(match.uitploeg) === normalize(currentPlayer.team)
         )
-      : calendar;
+      : [...calendar];
 
-  rows = [...rows].sort((a, b) => {
-    const weekDifference =
-      (Number(a.speelweek) || 0) -
-      (Number(b.speelweek) || 0);
+  /*
+   * Alleen bij "Mijn ploeg" voegen we de KVA-wedstrijden toe.
+   * "Alle wedstrijden" blijft de gewone afdelingskalender.
+   */
+  if (calendarMode === 'team') {
+    try {
+      const koppelingResponse = await fetch(
+        `${API_URL}/?type=kva` +
+        `&team=${encodeURIComponent(currentPlayer.team)}`
+      );
 
-    if (weekDifference !== 0) {
-      return weekDifference;
+      if (koppelingResponse.ok) {
+        const koppelingData =
+          await koppelingResponse.json();
+
+        const pouleNummer =
+          koppelingData.gevonden &&
+          koppelingData.koppeling
+            ? koppelingData.koppeling.poule
+            : null;
+
+        if (pouleNummer) {
+          const pouleResponse = await fetch(
+            `${API_URL}/?type=kva` +
+            `&poule=${encodeURIComponent(pouleNummer)}`
+          );
+
+          if (pouleResponse.ok) {
+            const pouleData =
+              await pouleResponse.json();
+
+            const kvaWedstrijden =
+              Array.isArray(pouleData.poule?.wedstrijden)
+                ? pouleData.poule.wedstrijden
+                    .filter(match =>
+                      kvaTeamNaamKomtOvereen(
+                        match.thuisploeg,
+                        currentPlayer.team
+                      ) ||
+                      kvaTeamNaamKomtOvereen(
+                        match.uitploeg,
+                        currentPlayer.team
+                      )
+                    )
+                    .map(match => ({
+                      ...match,
+                      isKva: true,
+                      kvaPoule:
+                        pouleData.poule.nummer
+                    }))
+                : [];
+
+            rows.push(...kvaWedstrijden);
+          }
+        }
+
+        /*
+         * Voeg ook de KVA-knock-outwedstrijden van de eigen ploeg toe.
+         * Lege toekomstige fases leveren gewoon geen wedstrijden op.
+         */
+        const kvaFaseSleutels = [
+          'top16',
+          'achtste',
+          'kwart',
+          'halve',
+          'finale'
+        ];
+
+        const faseResultaten = await Promise.all(
+          kvaFaseSleutels.map(async fase => {
+            try {
+              const response = await fetch(
+                `${API_URL}/?type=kva` +
+                `&fase=${encodeURIComponent(fase)}`
+              );
+
+              if (!response.ok) {
+                return [];
+              }
+
+              const data = await response.json();
+              const faseData = data.fase || null;
+
+              if (!faseData || !Array.isArray(faseData.wedstrijden)) {
+                return [];
+              }
+
+              return faseData.wedstrijden
+                .filter(match =>
+                  kvaTeamNaamKomtOvereen(
+                    match.thuisploeg,
+                    currentPlayer.team
+                  ) ||
+                  kvaTeamNaamKomtOvereen(
+                    match.uitploeg,
+                    currentPlayer.team
+                  )
+                )
+                .map(match => ({
+                  ...match,
+                  isKva: true,
+                  kvaFase: faseData.sleutel || fase,
+                  kvaFaseNaam: faseData.naam || fase
+                }));
+            } catch (error) {
+              console.error(
+                `KVA-fase ${fase} kon niet aan de kalender toegevoegd worden:`,
+                error
+              );
+
+              return [];
+            }
+          })
+        );
+
+        rows.push(...faseResultaten.flat());
+      }
+    } catch (error) {
+      console.error(
+        'KVA-kalender kon niet toegevoegd worden:',
+        error
+      );
+      // De gewone kalender blijft werken als KVA tijdelijk faalt.
     }
-
-    return String(a.datum || '').localeCompare(
-      String(b.datum || '')
-    );
-  });
-
-  const weeks =
-    [...new Set(
-      rows.map(match => match.speelweek)
-    )];
+  }
 
   const results = {};
 
   /*
-   * Uitslagen worden voor alle speelweken opgehaald.
-   * Daardoor bepaalt de echte uitslag of een wedstrijd
-   * "gespeeld" is, niet de datum.
+   * Alleen de gewone competitiewedstrijden hebben hier een
+   * ontmoetingId waarmee de bestaande uitslagenroute werkt.
    */
+  const gewoneRows =
+    rows.filter(match => !match.isKva);
+
+  const weeks =
+    [...new Set(
+      gewoneRows.map(match => match.speelweek)
+    )];
+
   await Promise.all(
     weeks.map(async week => {
       try {
@@ -966,21 +1110,107 @@ async function renderCalendar(calendar) {
     })
   );
 
-  if (calendarStatusFilter === 'played') {
-    rows = rows.filter(
-      match =>
-        Boolean(
-          results[String(match.ontmoetingId)]
-        )
+  /*
+   * KVA: zolang de Worker geen gespeelde partijen/echte detaildata
+   * teruggeeft, behandelen we 0,00 - 0,00 niet als een uitslag.
+   */
+  const kvaScoreGetal = value => {
+    const getal =
+      Number(
+        String(value ?? '')
+          .replace(',', '.')
+      );
+
+    return Number.isFinite(getal)
+      ? getal
+      : 0;
+  };
+
+  const kvaHeeftUitslag = match =>
+    match.isKva &&
+    (
+      kvaScoreGetal(match.thuisPunten) !== 0 ||
+      kvaScoreGetal(match.uitPunten) !== 0 ||
+      (
+        Array.isArray(match.partijen) &&
+        match.partijen.length > 0
+      )
     );
+
+  const isPlayed = match =>
+    match.isKva
+      ? kvaHeeftUitslag(match)
+      : Boolean(
+          results[String(match.ontmoetingId)]
+        );
+
+  if (calendarStatusFilter === 'played') {
+    rows = rows.filter(isPlayed);
   }
 
   if (calendarStatusFilter === 'upcoming') {
     rows = rows.filter(
-      match =>
-        !results[String(match.ontmoetingId)]
+      match => !isPlayed(match)
     );
   }
+
+  /*
+   * Gewone competitie gebruikt YYYY-MM-DD.
+   * KVA gebruikt DD/MM. Beide worden naar een echte datum vertaald
+   * zodat de wedstrijden chronologisch door elkaar staan.
+   */
+  const getCalendarDate = match => {
+    if (!match.datum) {
+      return new Date(8640000000000000);
+    }
+
+    if (match.isKva) {
+      const value =
+        String(match.datum).trim();
+
+      const parts =
+        value.match(
+          /^(\d{1,2})\/(\d{1,2})$/
+        );
+
+      if (parts) {
+        const day =
+          Number(parts[1]);
+
+        const month =
+          Number(parts[2]);
+
+        /*
+         * Seizoen 2026-27:
+         * juli-december = 2026
+         * januari-juni = 2027.
+         */
+        const year =
+          month >= 7
+            ? 2026
+            : 2027;
+
+        return new Date(
+          year,
+          month - 1,
+          day,
+          12,
+          0,
+          0
+        );
+      }
+    }
+
+    return new Date(
+      `${match.datum}T12:00:00`
+    );
+  };
+
+  rows = [...rows].sort(
+    (a, b) =>
+      getCalendarDate(a) -
+      getCalendarDate(b)
+  );
 
   calendarContent.innerHTML = '';
 
@@ -1029,31 +1259,13 @@ async function renderCalendar(calendar) {
     return;
   }
 
-  let lastWeek = null;
-
   rows.forEach(match => {
-    if (match.speelweek !== lastWeek) {
-      const heading =
-        document.createElement('div');
-
-      heading.className =
-        'week-heading';
-
-      heading.textContent =
-        `Speelweek ${match.speelweek}`;
-
-      calendarContent.appendChild(
-        heading
-      );
-
-      lastWeek =
-        match.speelweek;
-    }
-
     const result =
-      results[
-        String(match.ontmoetingId)
-      ];
+      match.isKva
+        ? null
+        : results[
+            String(match.ontmoetingId)
+          ];
 
     const card =
       document.createElement('article');
@@ -1061,44 +1273,101 @@ async function renderCalendar(calendar) {
     card.className =
       'calendar-match';
 
-    if (
-      normalize(match.thuisploeg) === normalize(currentPlayer.team) ||
-      normalize(match.uitploeg) === normalize(currentPlayer.team)
-    ) {
+    if (match.isKva) {
+      card.classList.add('calendar-match-kva');
+    }
+
+    const isOwnMatch =
+      match.isKva
+        ? (
+            kvaTeamNaamKomtOvereen(
+              match.thuisploeg,
+              currentPlayer.team
+            ) ||
+            kvaTeamNaamKomtOvereen(
+              match.uitploeg,
+              currentPlayer.team
+            )
+          )
+        : (
+            normalize(match.thuisploeg) ===
+              normalize(currentPlayer.team) ||
+            normalize(match.uitploeg) ===
+              normalize(currentPlayer.team)
+          );
+
+    if (isOwnMatch) {
       card.classList.add('my-match');
+    }
+
+    const scoreHtml =
+      match.isKva
+        ? (
+            kvaHeeftUitslag(match)
+              ? `
+                  <strong>
+                    ${esc(match.thuisPunten)}
+                    –
+                    ${esc(match.uitPunten)}
+                  </strong>
+                `
+              : '<strong>vs</strong>'
+          )
+        : (
+            result
+              ? `
+                  <strong>
+                    ${esc(result.thuisPunten)}
+                    –
+                    ${esc(result.uitPunten)}
+                  </strong>
+                `
+              : '<strong>–</strong>'
+          );
+
+    const metaParts = [];
+
+    if (match.lokaal) {
+      metaParts.push(
+        esc(match.lokaal)
+      );
     }
 
     card.innerHTML = `
       <div class="calendar-date">
-        ${formatDate(match.datum)}
+        ${
+          match.isKva
+            ? formatKvaDate(match.datum)
+            : formatDate(match.datum)
+        }
+        ${
+          match.isKva
+            ? '<span class="calendar-kva-badge">KVA</span>'
+            : ''
+        }
       </div>
 
       <div class="calendar-teams">
         <span>${esc(match.thuisploeg)}</span>
-
-        ${
-          result
-            ? `
-              <strong>
-                ${esc(result.thuisPunten)}
-                –
-                ${esc(result.uitPunten)}
-              </strong>
-            `
-            : '<strong>–</strong>'
-        }
-
+        ${scoreHtml}
         <span>${esc(match.uitploeg)}</span>
       </div>
 
       ${
-        match.lokaal
-          ? `<div class="calendar-meta">${esc(match.lokaal)}</div>`
+        metaParts.length
+          ? `
+              <div class="calendar-meta">
+                ${metaParts.join(' · ')}
+              </div>
+            `
           : ''
       }
     `;
 
-    if (result?.ontmoetingId) {
+    if (
+      !match.isKva &&
+      result?.ontmoetingId
+    ) {
       card.setAttribute('role', 'button');
       card.setAttribute('tabindex', '0');
 
@@ -1110,13 +1379,23 @@ async function renderCalendar(calendar) {
           'calendar'
         );
 
-      card.addEventListener('click', openDetail);
-      card.addEventListener('keydown', event => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          openDetail();
+      card.addEventListener(
+        'click',
+        openDetail
+      );
+
+      card.addEventListener(
+        'keydown',
+        event => {
+          if (
+            event.key === 'Enter' ||
+            event.key === ' '
+          ) {
+            event.preventDefault();
+            openDetail();
+          }
         }
-      });
+      );
     }
 
     calendarContent.appendChild(card);
@@ -1214,11 +1493,899 @@ function renderSeriesSelector() {
 
       grid.appendChild(button);
     });
+
+  const kvaButton =
+    document.createElement('button');
+
+  kvaButton.className =
+    'series-button series-kva';
+
+  kvaButton.innerHTML = `
+    <strong>KVA</strong>
+    <span>Knock-out & poules</span>
+  `;
+
+  kvaButton.addEventListener(
+    'click',
+    openKvaSelector
+  );
+
+  grid.appendChild(kvaButton);
+}
+
+
+
+async function openKvaSelector() {
+  selectedSeries = 'KVA';
+
+  const grid =
+    document.getElementById('seriesGrid');
+
+  grid.className = 'series-detail';
+  grid.innerHTML = `
+    <button
+      class="text-button series-back-button"
+      id="kvaBackButton"
+      type="button"
+    >
+      ← Andere reeks kiezen
+    </button>
+
+    <div class="series-detail-heading">
+      <span class="eyebrow">KVA</span>
+      <h3>KVA</h3>
+      <p class="muted">
+        Bekijk de poules en de knock-outfases van de KVA.
+      </p>
+    </div>
+
+    <div class="series-detail-heading">
+      <span class="eyebrow">Voorronde</span>
+      <h3>Poules</h3>
+      <p class="muted">
+        Kies een poule om de stand en wedstrijden te bekijken.
+      </p>
+    </div>
+
+    <div id="kvaPouleGrid" class="series-grid">
+      <div class="empty-state">
+        <strong>KVA-poules laden...</strong>
+      </div>
+    </div>
+
+    <div class="series-detail-heading kva-knockout-heading">
+      <span class="eyebrow">Knock-out</span>
+      <h3>Volgende rondes</h3>
+    </div>
+
+    <div id="kvaFaseGrid" class="kva-phase-grid">
+      <div class="empty-state">
+        <strong>KVA-fases laden...</strong>
+      </div>
+    </div>
+  `;
+
+  document
+    .getElementById('kvaBackButton')
+    .addEventListener(
+      'click',
+      renderSeriesSelector
+    );
+
+  try {
+    const response =
+      await fetch(
+        `${API_URL}/?type=kva`
+      );
+
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+
+    const data =
+      await response.json();
+
+    const poules =
+      Array.isArray(data.poules)
+        ? data.poules
+        : [];
+
+    const fases =
+      Array.isArray(data.fases)
+        ? data.fases.filter(
+            fase => fase.sleutel !== 'poules'
+          )
+        : [];
+
+    renderKvaPoules(poules);
+    renderKvaFases(fases);
+
+  } catch (error) {
+    console.error(error);
+
+    const faseContainer =
+      document.getElementById('kvaFaseGrid');
+
+    const pouleContainer =
+      document.getElementById('kvaPouleGrid');
+
+    if (faseContainer) {
+      faseContainer.innerHTML = `
+        <div class="empty-state">
+          <strong>KVA-fases konden niet geladen worden</strong>
+          <p>Probeer het later opnieuw.</p>
+        </div>
+      `;
+    }
+
+    if (pouleContainer) {
+      pouleContainer.innerHTML = `
+        <div class="empty-state">
+          <strong>KVA-poules konden niet geladen worden</strong>
+          <p>Probeer het later opnieuw.</p>
+        </div>
+      `;
+    }
+  }
+}
+
+
+function renderKvaFases(fases) {
+  const container =
+    document.getElementById('kvaFaseGrid');
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = '';
+
+  if (!fases.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Geen KVA-fases gevonden</strong>
+      </div>
+    `;
+    return;
+  }
+
+  fases.forEach(fase => {
+    const button =
+      document.createElement('button');
+
+    button.className =
+      'kva-phase-button';
+
+    button.innerHTML = `
+      <strong>${esc(fase.naam)}</strong>
+    `;
+
+    button.addEventListener(
+      'click',
+      () => openKvaFase(fase.sleutel, fase.naam)
+    );
+
+    container.appendChild(button);
+  });
+}
+
+
+async function openKvaFase(faseSleutel, faseNaam) {
+  selectedSeries = 'KVA';
+
+  const grid =
+    document.getElementById('seriesGrid');
+
+  grid.className = 'series-detail';
+  grid.innerHTML = `
+    <button
+      class="text-button series-back-button"
+      id="kvaFaseBackButton"
+      type="button"
+    >
+      ← KVA
+    </button>
+
+    <div class="series-detail-heading">
+      <span class="eyebrow">KVA</span>
+      <h3>${esc(faseNaam)}</h3>
+      <p class="muted">
+        Wedstrijden van deze KVA-fase.
+      </p>
+    </div>
+
+    <div id="kvaFaseContent">
+      <div class="empty-state">
+        <strong>${esc(faseNaam)} laden...</strong>
+      </div>
+    </div>
+  `;
+
+  document
+    .getElementById('kvaFaseBackButton')
+    .addEventListener(
+      'click',
+      openKvaSelector
+    );
+
+  try {
+    const response =
+      await fetch(
+        `${API_URL}/?type=kva` +
+        `&fase=${encodeURIComponent(faseSleutel)}`
+      );
+
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+
+    const data =
+      await response.json();
+
+    renderKvaFaseWedstrijden(
+      data.fase || {
+        sleutel: faseSleutel,
+        naam: faseNaam,
+        wedstrijden: []
+      }
+    );
+
+  } catch (error) {
+    console.error(error);
+
+    const container =
+      document.getElementById('kvaFaseContent');
+
+    if (container) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <strong>${esc(faseNaam)} kon niet geladen worden</strong>
+          <p>Probeer het later opnieuw.</p>
+        </div>
+      `;
+    }
+  }
+}
+
+
+function renderKvaFaseWedstrijden(fase) {
+  const container =
+    document.getElementById('kvaFaseContent');
+
+  if (!container) {
+    return;
+  }
+
+  const matches =
+    Array.isArray(fase.wedstrijden)
+      ? [...fase.wedstrijden]
+      : [];
+
+  container.innerHTML = '';
+
+  if (!matches.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Nog geen wedstrijden ingevuld</strong>
+        <p>
+          Zodra ADL2000 de ${esc(fase.naam || 'KVA-fase')} invult,
+          verschijnen de wedstrijden hier automatisch.
+        </p>
+      </div>
+    `;
+    return;
+  }
+
+  matches.sort(
+    (a, b) =>
+      kvaDatumNaarAppSorteerWaarde(a.datum) -
+      kvaDatumNaarAppSorteerWaarde(b.datum)
+  );
+
+  matches.forEach(match => {
+    const card =
+      document.createElement('article');
+
+    card.className =
+      'calendar-match calendar-match-kva';
+
+    if (
+      kvaTeamNaamKomtOvereen(
+        match.thuisploeg,
+        currentPlayer.team
+      ) ||
+      kvaTeamNaamKomtOvereen(
+        match.uitploeg,
+        currentPlayer.team
+      )
+    ) {
+      card.classList.add('my-match');
+    }
+
+    const thuis =
+      Number(
+        String(match.thuisPunten ?? '')
+          .replace(',', '.')
+      );
+
+    const uit =
+      Number(
+        String(match.uitPunten ?? '')
+          .replace(',', '.')
+      );
+
+    const heeftUitslag =
+      (Number.isFinite(thuis) && thuis !== 0) ||
+      (Number.isFinite(uit) && uit !== 0) ||
+      (
+        Array.isArray(match.partijen) &&
+        match.partijen.length > 0
+      );
+
+    card.innerHTML = `
+      <div class="calendar-date">
+        ${formatKvaDate(match.datum)}
+        <span class="calendar-kva-badge">KVA</span>
+      </div>
+
+      <div class="calendar-teams">
+        <span>${esc(match.thuisploeg)}</span>
+
+        <strong>
+          ${
+            heeftUitslag
+              ? `${esc(match.thuisPunten)} – ${esc(match.uitPunten)}`
+              : 'vs'
+          }
+        </strong>
+
+        <span>${esc(match.uitploeg)}</span>
+      </div>
+
+      ${
+        match.lokaal
+          ? `
+              <div class="calendar-meta">
+                ${esc(match.lokaal)}
+              </div>
+            `
+          : ''
+      }
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+
+function kvaDatumNaarAppSorteerWaarde(value) {
+  const text =
+    String(value ?? '').trim();
+
+  if (!text) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+
+  const kva =
+    text.match(
+      /^(\d{1,2})[\/-](\d{1,2})(?:[\/-](\d{2,4}))?$/
+    );
+
+  if (kva) {
+    const day = Number(kva[1]);
+    const month = Number(kva[2]);
+
+    let year =
+      kva[3]
+        ? Number(kva[3])
+        : (month >= 7 ? 2026 : 2027);
+
+    if (year < 100) {
+      year += 2000;
+    }
+
+    return new Date(
+      year,
+      month - 1,
+      day,
+      12,
+      0,
+      0
+    ).getTime();
+  }
+
+  const date =
+    new Date(`${text}T12:00:00`);
+
+  return Number.isNaN(date.getTime())
+    ? Number.MAX_SAFE_INTEGER
+    : date.getTime();
+}
+
+
+async function renderKvaPoules(poules) {
+  const container =
+    document.getElementById('kvaPouleGrid');
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = '';
+
+  if (!poules.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Geen KVA-poules gevonden</strong>
+      </div>
+    `;
+    return;
+  }
+
+  let eigenPoule = null;
+
+  try {
+    if (currentPlayer?.team) {
+      const response = await fetch(
+        `${API_URL}/?type=kva` +
+        `&team=${encodeURIComponent(currentPlayer.team)}`
+      );
+
+      if (response.ok) {
+        const data =
+          await response.json();
+
+        if (
+          data.gevonden &&
+          data.koppeling
+        ) {
+          eigenPoule =
+            Number(data.koppeling.poule);
+        }
+      }
+    }
+  } catch (error) {
+    console.error(
+      'Eigen KVA-poule kon niet bepaald worden:',
+      error
+    );
+  }
+
+  poules.forEach(poule => {
+    const button =
+      document.createElement('button');
+
+    button.className =
+      'series-button series-kva';
+
+    if (
+      eigenPoule !== null &&
+      Number(poule.nummer) === eigenPoule
+    ) {
+      button.classList.add(
+        'series-kva-own'
+      );
+    }
+
+    button.innerHTML = `
+      <strong>${esc(poule.nummer)}</strong>
+      <span>${esc(poule.naam)}</span>
+    `;
+
+    button.addEventListener(
+      'click',
+      () => openKvaPoule(poule.nummer)
+    );
+
+    container.appendChild(button);
+  });
+}
+
+async function openKvaPoule(pouleNummer) {
+  selectedSeries = 'KVA';
+
+  const grid =
+    document.getElementById('seriesGrid');
+
+  grid.className = 'series-detail';
+  grid.innerHTML = `
+    <button
+      class="text-button series-back-button"
+      id="kvaPouleBackButton"
+      type="button"
+    >
+      ← KVA-poules
+    </button>
+
+    <div class="series-detail-heading">
+      <span class="eyebrow">KVA</span>
+      <h3>Poule ${esc(pouleNummer)}</h3>
+      <p class="muted">
+        Bekijk de stand of kalender van deze KVA-poule.
+      </p>
+    </div>
+
+    <div class="series-actions">
+      <button
+        class="primary-button"
+        id="kvaStandButton"
+        type="button"
+      >
+        Stand
+      </button>
+
+      <button
+        class="secondary-button"
+        id="kvaCalendarButton"
+        type="button"
+      >
+        Kalender & uitslagen
+      </button>
+    </div>
+
+    <div id="kvaContent">
+      <div class="empty-state">
+        <strong>KVA-poule laden...</strong>
+      </div>
+    </div>
+  `;
+
+  document
+    .getElementById('kvaPouleBackButton')
+    .addEventListener(
+      'click',
+      openKvaSelector
+    );
+
+  try {
+    const response =
+      await fetch(
+        `${API_URL}/?type=kva` +
+        `&poule=${encodeURIComponent(pouleNummer)}`
+      );
+
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+
+    const data =
+      await response.json();
+
+    const poule =
+      data.poule || null;
+
+    if (!poule) {
+      throw new Error('KVA-poule niet gevonden');
+    }
+
+    const standButton =
+      document.getElementById('kvaStandButton');
+
+    const calendarButton =
+      document.getElementById('kvaCalendarButton');
+
+    standButton.addEventListener(
+      'click',
+      () => {
+        standButton.className = 'primary-button';
+        calendarButton.className = 'secondary-button';
+        renderKvaStand(poule);
+      }
+    );
+
+    calendarButton.addEventListener(
+      'click',
+      () => {
+        standButton.className = 'secondary-button';
+        calendarButton.className = 'primary-button';
+        renderKvaCalendar(poule);
+      }
+    );
+
+    renderKvaStand(poule);
+
+  } catch (error) {
+    console.error(error);
+
+    const container =
+      document.getElementById('kvaContent');
+
+    if (container) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <strong>KVA-poule kon niet geladen worden</strong>
+          <p>Probeer het later opnieuw.</p>
+        </div>
+      `;
+    }
+  }
+}
+
+
+function renderKvaStand(poule) {
+  const container =
+    document.getElementById('kvaContent');
+
+  if (!container) {
+    return;
+  }
+
+  const rows =
+    Array.isArray(poule.stand)
+      ? poule.stand
+      : [];
+
+  if (!rows.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Geen stand gevonden</strong>
+      </div>
+    `;
+    return;
+  }
+
+  const table =
+    document.createElement('div');
+
+  table.className =
+    'stand-table stand-table-full';
+
+  table.innerHTML = `
+    <div class="stand-row stand-header">
+      <span>#</span>
+      <span>Ploeg</span>
+      <span>GSP</span>
+      <span>W</span>
+      <span>V</span>
+      <span>G</span>
+      <span>Punten</span>
+    </div>
+  `;
+
+  rows.forEach(row => {
+    const element =
+      document.createElement('div');
+
+    element.className =
+      'stand-row';
+
+    if (
+      normalize(row.ploeg) ===
+      normalize(currentPlayer.team)
+    ) {
+      element.classList.add('my-team');
+    }
+
+    element.innerHTML = `
+      <span class="stand-position">
+        ${esc(row.positie)}
+      </span>
+
+      <span class="stand-team">
+        ${esc(row.ploeg)}
+      </span>
+
+      <span class="stand-gsp">
+        ${esc(row.gsp)}
+      </span>
+
+      <span>${esc(row.winst ?? '–')}</span>
+      <span>${esc(row.verlies ?? '–')}</span>
+      <span>${esc(row.gelijk ?? '–')}</span>
+
+      <span class="stand-points">
+        ${esc(row.punten)}
+      </span>
+    `;
+
+    table.appendChild(element);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(table);
+}
+
+
+function renderKvaCalendar(poule) {
+  const container =
+    document.getElementById('kvaContent');
+
+  if (!container) {
+    return;
+  }
+
+  const matches =
+    Array.isArray(poule.wedstrijden)
+      ? [...poule.wedstrijden]
+      : [];
+
+  matches.sort((a, b) => {
+    const weekDifference =
+      (Number(a.speelweek) || 0) -
+      (Number(b.speelweek) || 0);
+
+    if (weekDifference !== 0) {
+      return weekDifference;
+    }
+
+    return String(a.datum || '')
+      .localeCompare(
+        String(b.datum || '')
+      );
+  });
+
+  container.innerHTML = '';
+
+  if (!matches.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Geen wedstrijden gevonden</strong>
+      </div>
+    `;
+    return;
+  }
+
+  let lastWeek = null;
+
+  matches.forEach(match => {
+    if (match.speelweek !== lastWeek) {
+      const heading =
+        document.createElement('div');
+
+      heading.className =
+        'week-heading';
+
+      heading.textContent =
+        `Speelweek ${match.speelweek}`;
+
+      container.appendChild(heading);
+
+      lastWeek =
+        match.speelweek;
+    }
+
+    const card =
+      document.createElement('article');
+
+    card.className =
+      'calendar-match';
+
+    if (
+      kvaTeamNaamKomtOvereen(
+        match.thuisploeg,
+        currentPlayer.team
+      ) ||
+      kvaTeamNaamKomtOvereen(
+        match.uitploeg,
+        currentPlayer.team
+      )
+    ) {
+      card.classList.add('my-match');
+    }
+
+    const kvaScoreGetal = value => {
+      const getal =
+        Number(
+          String(value ?? '')
+            .replace(',', '.')
+        );
+
+      return Number.isFinite(getal)
+        ? getal
+        : 0;
+    };
+
+    const heeftUitslag =
+      kvaScoreGetal(match.thuisPunten) !== 0 ||
+      kvaScoreGetal(match.uitPunten) !== 0 ||
+      (
+        Array.isArray(match.partijen) &&
+        match.partijen.length > 0
+      );
+
+    card.innerHTML = `
+      <div class="calendar-date">
+        ${formatKvaDate(match.datum)}
+      </div>
+
+      <div class="calendar-teams">
+        <span>${esc(match.thuisploeg)}</span>
+
+        <strong>
+          ${
+            heeftUitslag
+              ? `${esc(match.thuisPunten)} – ${esc(match.uitPunten)}`
+              : 'vs'
+          }
+        </strong>
+
+        <span>${esc(match.uitploeg)}</span>
+      </div>
+
+      ${
+        match.lokaal
+          ? `
+              <div class="calendar-meta">
+                ${esc(match.lokaal)}
+              </div>
+            `
+          : ''
+      }
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+
+function kvaTeamNaamKomtOvereen(a, b) {
+  const kort = value =>
+    normalize(value)
+      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(
+        /^(bc|kc|kb|kbc|bb|pc)\s+/,
+        ''
+      )
+      .trim();
+
+  return kort(a) === kort(b);
+}
+
+
+function formatKvaDate(value) {
+  if (!value) {
+    return 'Datum onbekend';
+  }
+
+  const text =
+    String(value).trim();
+
+  const match =
+    text.match(/^(\d{1,2})\/(\d{1,2})$/);
+
+  if (!match) {
+    return formatDate(text);
+  }
+
+  const day =
+    Number(match[1]);
+
+  const month =
+    Number(match[2]);
+
+  const currentYear =
+    new Date().getFullYear();
+
+  const year =
+    month >= 7
+      ? currentYear
+      : currentYear + 1;
+
+  const date =
+    new Date(
+      year,
+      month - 1,
+      day,
+      12,
+      0,
+      0
+    );
+
+  return date.toLocaleDateString(
+    'nl-BE',
+    {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }
+  );
 }
 
 
 function openSeries(division) {
   selectedSeries = division;
+  seriesStandMode = 'ploegen';
 
   const grid =
     document.getElementById('seriesGrid');
@@ -1331,7 +2498,7 @@ async function getCurrentSeriesWeek(division) {
 }
 
 
-async function loadSeriesStand(division) {
+async function loadSeriesStand(division, mode = seriesStandMode) {
   const container =
     document.getElementById('seriesContent');
 
@@ -1339,18 +2506,54 @@ async function loadSeriesStand(division) {
     return;
   }
 
+  seriesStandMode = mode;
+
   container.innerHTML = `
+    <div class="series-stand-mode" id="seriesStandModeControls">
+      <button
+        class="${seriesStandMode === 'ploegen' ? 'primary-button' : 'secondary-button'}"
+        data-series-stand-mode="ploegen"
+        type="button"
+      >
+        Ploegen
+      </button>
+
+      <button
+        class="${seriesStandMode === 'individueel' ? 'primary-button' : 'secondary-button'}"
+        data-series-stand-mode="individueel"
+        type="button"
+      >
+        Individueel
+      </button>
+    </div>
+
     <div class="empty-state">
-      <strong>Stand laden...</strong>
+      <strong>${seriesStandMode === 'individueel' ? 'Individuele stand' : 'Stand'} laden...</strong>
     </div>
   `;
+
+  container
+    .querySelectorAll('[data-series-stand-mode]')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        loadSeriesStand(
+          division,
+          button.dataset.seriesStandMode
+        );
+      });
+    });
 
   try {
     const week =
       await getCurrentSeriesWeek(division);
 
+    const type =
+      seriesStandMode === 'individueel'
+        ? 'individueel'
+        : 'stand';
+
     const response = await fetch(
-      `${API_URL}/?type=stand` +
+      `${API_URL}/?type=${type}` +
       `&afdeling=${encodeURIComponent(division)}` +
       `&speelweek=${encodeURIComponent(week)}`
     );
@@ -1360,21 +2563,36 @@ async function loadSeriesStand(division) {
     }
 
     const data = await response.json();
+    const rows = data.stand || [];
 
-    renderSeriesStand(
-      container,
-      data.stand || []
-    );
+    const controls =
+      container.querySelector('#seriesStandModeControls');
+
+    const content = document.createElement('div');
+    content.className = 'series-stand-content';
+
+    if (seriesStandMode === 'individueel') {
+      renderSeriesIndividualStand(content, rows);
+    } else {
+      renderSeriesStand(content, rows);
+    }
+
+    container.innerHTML = '';
+    container.appendChild(controls);
+    container.appendChild(content);
 
   } catch (error) {
     console.error(error);
 
-    container.innerHTML = `
-      <div class="empty-state">
+    const loading =
+      container.querySelector('.empty-state');
+
+    if (loading) {
+      loading.innerHTML = `
         <strong>Stand kon niet geladen worden</strong>
         <p>Probeer het later opnieuw.</p>
-      </div>
-    `;
+      `;
+    }
   }
 }
 
@@ -1405,9 +2623,7 @@ function renderSeriesStand(container, rows) {
   `;
 
   rows.forEach(row => {
-    const element =
-      document.createElement('div');
-
+    const element = document.createElement('div');
     element.className = 'stand-row';
 
     if (
@@ -1429,6 +2645,60 @@ function renderSeriesStand(container, rows) {
       <span>${esc(lost)}</span>
       <span>${esc(drawn)}</span>
       <span class="stand-points">${esc(row.punten)}</span>
+    `;
+
+    table.appendChild(element);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(table);
+}
+
+
+function renderSeriesIndividualStand(container, rows) {
+  if (!rows.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Geen individuele stand gevonden</strong>
+      </div>
+    `;
+    return;
+  }
+
+  const table = document.createElement('div');
+  table.className = 'individual-stand-table';
+
+  table.innerHTML = `
+    <div class="individual-stand-row individual-stand-header">
+      <span>#</span>
+      <span>Speler</span>
+      <span>Ploeg</span>
+      <span>TSP</span>
+      <span>PTN</span>
+      <span>BNS</span>
+      <span>Totaal</span>
+    </div>
+  `;
+
+  rows.forEach(row => {
+    const element = document.createElement('div');
+    element.className = 'individual-stand-row';
+
+    if (
+      String(row.spelerId) ===
+      String(currentPlayer.id)
+    ) {
+      element.classList.add('my-team');
+    }
+
+    element.innerHTML = `
+      <span>${esc(row.positie)}</span>
+      <span><strong>${esc(row.naam)}</strong></span>
+      <span>${esc(row.ploeg)}</span>
+      <span>${esc(row.tsp)}</span>
+      <span>${formatStandNumber(row.ptn)}</span>
+      <span>${formatStandNumber(row.bonus)}</span>
+      <span><strong>${formatStandNumber(row.totaal)}</strong></span>
     `;
 
     table.appendChild(element);
@@ -1777,14 +3047,13 @@ function renderMatchDetail(container, match) {
 
     card.innerHTML = `
       <div class="match-game-top">
-        <span class="card-label">Partij ${index + 1}</span>
-        <strong>BRT ${esc(partij.brt ?? '–')}</strong>
-      </div>
+  <span class="card-label">Partij ${index + 1}</span>
+</div>
 
       <div class="match-game-versus">
-        ${renderMatchDetailPlayer('Thuis', partij.thuis)}
-        <div class="match-game-vs">VS</div>
-        ${renderMatchDetailPlayer('Uit', partij.uit)}
+        ${renderMatchDetailPlayer('Thuis', partij.thuis, partij.brt)}
+<div class="match-game-vs">VS</div>
+${renderMatchDetailPlayer('Uit', partij.uit, partij.brt)}
       </div>
     `;
 
@@ -1792,8 +3061,7 @@ function renderMatchDetail(container, match) {
   });
 }
 
-
-function renderMatchDetailPlayer(label, player) {
+function renderMatchDetailPlayer(label, player, brt) {
   return `
     <div class="match-game-player">
       <span class="match-game-side">${esc(label)}</span>
@@ -1801,10 +3069,11 @@ function renderMatchDetailPlayer(label, player) {
 
       <div class="match-game-stats">
         <span><small>TSP</small><b>${esc(player?.tsp ?? '–')}</b></span>
-        <span><small>PTN</small><b>${formatStandNumber(player?.ptn)}</b></span>
         <span><small>GSP</small><b>${esc(player?.gsp ?? '–')}</b></span>
+        <span><small>BRT</small><b>${esc(brt ?? '–')}</b></span>
         <span><small>MOY</small><b>${formatMoyenne(player?.moyenne)}</b></span>
         <span><small>HR</small><b>${esc(player?.hr ?? '–')}</b></span>
+        <span class="match-game-ptn"><small>PTN</small><b>${formatStandNumber(player?.ptn)}</b></span>
       </div>
     </div>
   `;
@@ -2626,6 +3895,7 @@ function formatMoyenne(value) {
 }
 
 
+
 function bindMoreMenu() {
   searchOtherPlayer.addEventListener(
     'click',
@@ -2675,6 +3945,26 @@ function bindMoreMenu() {
     );
   }
 
+const venuesButton =
+  document.getElementById('venuesButton');
+
+if (venuesButton) {
+  venuesButton.addEventListener(
+    'click',
+    openVenues
+  );
+}
+
+const venuesBackButton =
+  document.getElementById('venuesBackButton');
+
+if (venuesBackButton) {
+  venuesBackButton.addEventListener(
+    'click',
+    () => showMainScreen('more')
+  );
+}
+
   changePlayer.addEventListener(
     'click',
     () => {
@@ -2705,6 +3995,505 @@ function bindMoreMenu() {
     });
 }
 
+async function openTeamDetail(afdeling, team, returnScreen = 'stand') {
+  showOnly('teamDetail');
+
+  teamDetailTitle.textContent = team;
+  teamDetailDescription.textContent =
+    `Afdeling ${afdeling}`;
+
+  teamDetailContent.innerHTML = `
+    <div class="loading-box">
+      Ploeggegevens laden...
+    </div>
+  `;
+
+  teamDetailBackButton.onclick = () => {
+  if (returnScreen === 'venues') {
+    openVenues();
+    return;
+  }
+
+  showMainScreen(returnScreen);
+};
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+  try {
+    const response = await fetch(
+      `${API_URL}/?type=ploegen` +
+      `&afdeling=${encodeURIComponent(afdeling)}`
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Ploeggegevens ${response.status}`
+      );
+    }
+
+    const data = await response.json();
+
+    const ploeg = (data.ploegen || []).find(
+      item =>
+        normalize(item.team) ===
+        normalize(team)
+    );
+
+    if (!ploeg) {
+      throw new Error(
+        `Ploeg niet gevonden: ${team}`
+      );
+    }
+
+    renderTeamDetail(ploeg);
+
+  } catch (error) {
+    console.error(error);
+
+    teamDetailContent.innerHTML = `
+      <div class="empty-state">
+        <strong>Ploeggegevens konden niet geladen worden</strong>
+        <p>Probeer het later opnieuw.</p>
+      </div>
+    `;
+  }
+}
+
+
+function renderTeamDetail(ploeg) {
+  const kapitein = ploeg.kapitein || null;
+  const lokaal = ploeg.lokaal || {};
+  const spelers = Array.isArray(ploeg.spelers)
+    ? ploeg.spelers
+    : [];
+
+  const adres = [
+    lokaal.straat,
+    [lokaal.postcode, lokaal.gemeente]
+      .filter(Boolean)
+      .join(' ')
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  const routeUrl = adres
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adres)}`
+    : '';
+
+  teamDetailContent.innerHTML = `
+    <article class="dashboard-card team-detail-summary">
+      <span class="card-label">Ploeg</span>
+      <h3>${esc(ploeg.team)}</h3>
+
+      <div class="team-detail-meta">
+        <span>
+          <small>Afdeling</small>
+          <strong>${esc(ploeg.afdeling)}</strong>
+        </span>
+
+        <span>
+          <small>Speeldag</small>
+          <strong>${esc(ploeg.speeldag || '–')}</strong>
+        </span>
+
+        <span>
+          <small>Uur</small>
+          <strong>${esc(ploeg.uur || '–')}</strong>
+        </span>
+      </div>
+    </article>
+
+    <article class="dashboard-card">
+      <span class="card-label">Speellokaal</span>
+      <h3 class="team-detail-heading">
+        ${esc(lokaal.naam || 'Onbekend')}
+      </h3>
+
+      ${
+        adres
+          ? `
+            <p class="team-detail-address">
+              ${esc(lokaal.straat || '')}<br>
+              ${esc(
+                [lokaal.postcode, lokaal.gemeente]
+                  .filter(Boolean)
+                  .join(' ')
+              )}
+            </p>
+          `
+          : ''
+      }
+
+      ${
+        lokaal.telefoon
+          ? `
+            <a
+              class="team-detail-contact"
+              href="tel:${esc(
+                String(lokaal.telefoon)
+                  .replace(/[^\d+]/g, '')
+              )}"
+            >
+              ☎ ${esc(lokaal.telefoon)}
+            </a>
+          `
+          : ''
+      }
+
+      ${
+        routeUrl
+          ? `
+            <a
+              class="team-detail-route"
+              href="${esc(routeUrl)}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Route bekijken
+            </a>
+          `
+          : ''
+      }
+    </article>
+
+    ${
+      kapitein
+        ? `
+          <article class="dashboard-card">
+            <span class="card-label">Kapitein</span>
+            <h3 class="team-detail-heading">
+              ${esc(kapitein.naam)}
+            </h3>
+
+            <div class="team-detail-contact-list">
+              ${
+                kapitein.gsm
+                  ? `
+                    <a
+                      href="tel:${esc(
+                        String(kapitein.gsm)
+                          .replace(/[^\d+]/g, '')
+                      )}"
+                    >
+                      ☎ ${esc(kapitein.gsm)}
+                    </a>
+                  `
+                  : ''
+              }
+
+              ${
+                kapitein.email
+                  ? `
+                    <a href="mailto:${esc(kapitein.email)}">
+                      ✉ ${esc(kapitein.email)}
+                    </a>
+                  `
+                  : ''
+              }
+            </div>
+          </article>
+        `
+        : ''
+    }
+
+    <article class="dashboard-card">
+      <div class="team-detail-player-heading">
+        <div>
+          <span class="card-label">Ploeg</span>
+          <h3>Spelers</h3>
+        </div>
+
+        <strong>${spelers.length}</strong>
+      </div>
+
+      <div class="team-detail-players">
+        ${spelers.map(speler => `
+          <button
+            class="team-detail-player"
+            type="button"
+            data-team-player-id="${esc(speler.id)}"
+          >
+            <span>
+              <strong>${esc(speler.naam)}</strong>
+              ${
+                speler.kapitein
+                  ? '<small>Kapitein</small>'
+                  : ''
+              }
+            </span>
+
+            <span class="team-player-tsp">
+              <small>TSP</small>
+              <strong>${esc(speler.tsp)}</strong>
+            </span>
+          </button>
+        `).join('')}
+      </div>
+    </article>
+  `;
+
+  teamDetailContent
+    .querySelectorAll('[data-team-player-id]')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const speler = spelers.find(
+          item =>
+            String(item.id) ===
+            String(button.dataset.teamPlayerId)
+        );
+
+        if (!speler) {
+          return;
+        }
+
+        openOtherPlayerStats({
+          id: speler.id,
+          naam: speler.naam,
+          tsp: speler.tsp,
+          team: ploeg.team,
+          afdeling: ploeg.afdeling
+        });
+      });
+    });
+}
+
+async function openVenues() {
+  showOnly('venues');
+
+  const container =
+    document.getElementById('venuesContent');
+
+  container.innerHTML = `
+    <div class="loading-box">
+      Speellokalen laden...
+    </div>
+  `;
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+  try {
+    const afdelingen =
+      ['A', 'B', 'C', 'D', 'E'];
+
+    const resultaten =
+      await Promise.all(
+        afdelingen.map(async afdeling => {
+          const response = await fetch(
+            `${API_URL}/?type=ploegen` +
+            `&afdeling=${encodeURIComponent(afdeling)}`
+          );
+
+          if (!response.ok) {
+            throw new Error(
+              `Afdeling ${afdeling}: ${response.status}`
+            );
+          }
+
+          return response.json();
+        })
+      );
+
+    const ploegen =
+      resultaten.flatMap(data =>
+        data.ploegen || []
+      );
+
+    renderVenues(
+      container,
+      ploegen
+    );
+
+  } catch (error) {
+    console.error(error);
+
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Speellokalen konden niet geladen worden</strong>
+        <p>Probeer het later opnieuw.</p>
+      </div>
+    `;
+  }
+}
+
+
+function renderVenues(container, ploegen) {
+  const afdelingen =
+    ['A', 'B', 'C', 'D', 'E'];
+
+  container.innerHTML = `
+    <div class="segmented venues-segments">
+      ${afdelingen.map((afdeling, index) => `
+        <button
+          class="segment ${index === 0 ? 'active' : ''}"
+          type="button"
+          data-venue-division="${afdeling}"
+        >
+          ${afdeling}
+        </button>
+      `).join('')}
+    </div>
+
+    <div id="venuesList"></div>
+  `;
+
+  const list =
+    document.getElementById('venuesList');
+
+  const showDivision = afdeling => {
+    container
+      .querySelectorAll('[data-venue-division]')
+      .forEach(button => {
+        button.classList.toggle(
+          'active',
+          button.dataset.venueDivision === afdeling
+        );
+      });
+
+    const afdelingPloegen =
+      ploegen.filter(
+        ploeg =>
+          String(ploeg.afdeling) === afdeling
+      );
+
+    list.innerHTML = '';
+
+    afdelingPloegen.forEach(ploeg => {
+      const lokaal =
+        ploeg.lokaal || {};
+
+      const adres =
+        [
+          lokaal.straat,
+          [
+            lokaal.postcode,
+            lokaal.gemeente
+          ]
+            .filter(Boolean)
+            .join(' ')
+        ]
+          .filter(Boolean)
+          .join(', ');
+
+      const card =
+        document.createElement('article');
+
+      card.className =
+        'dashboard-card venue-card';
+
+      card.innerHTML = `
+        <button
+          class="venue-team-button"
+          type="button"
+        >
+          <span class="card-label">
+            Afdeling ${esc(ploeg.afdeling)}
+          </span>
+
+          <strong>
+            ${esc(ploeg.team)}
+          </strong>
+
+          <span class="venue-arrow">›</span>
+        </button>
+
+        <div class="venue-info">
+          <h3>
+            ${esc(lokaal.naam || 'Onbekend lokaal')}
+          </h3>
+
+          ${
+            adres
+              ? `
+                <p>
+                  ${esc(lokaal.straat || '')}<br>
+                  ${esc(
+                    [
+                      lokaal.postcode,
+                      lokaal.gemeente
+                    ]
+                      .filter(Boolean)
+                      .join(' ')
+                  )}
+                </p>
+              `
+              : ''
+          }
+
+          <div class="venue-meta">
+            <span>
+              ${esc(ploeg.speeldag || '–')}
+            </span>
+
+            <span>
+              ${esc(ploeg.uur || '–')}
+            </span>
+          </div>
+        </div>
+
+        <div class="venue-actions">
+          ${
+            lokaal.telefoon
+              ? `
+                <a
+                  href="tel:${esc(
+                    String(lokaal.telefoon)
+                      .replace(/[^\d+]/g, '')
+                  )}"
+                >
+                  Bellen
+                </a>
+              `
+              : ''
+          }
+
+          ${
+            adres
+              ? `
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(adres)}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Route
+                </a>
+              `
+              : ''
+          }
+        </div>
+      `;
+
+      card
+        .querySelector('.venue-team-button')
+        .addEventListener('click', () => {
+          openTeamDetail(
+            ploeg.afdeling,
+            ploeg.team,
+            'venues'
+          );
+        });
+
+      list.appendChild(card);
+    });
+  };
+
+  container
+    .querySelectorAll('[data-venue-division]')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        showDivision(
+          button.dataset.venueDivision
+        );
+      });
+    });
+
+  showDivision('A');
+}
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
