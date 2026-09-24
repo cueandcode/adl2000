@@ -1,0 +1,24 @@
+{
+  "name": "ADL2000",
+  "short_name": "ADL2000",
+  "description": "Persoonlijk competitieoverzicht voor ADL2000",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#e8efeb",
+  "theme_color": "#08783f",
+  "lang": "nl",
+  "icons": [
+    {
+      "src": "adlicon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "adlicon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

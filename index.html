@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#08783f">
+
+  <title>ADL2000</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app">
+
+    <header class="app-header">
+      <div class="header-inner">
+        <img
+          src="adllogo.png"
+          alt="ADL2000"
+          class="header-logo"
+        >
+
+        <p id="headerSubtitle">
+          Competitieoverzicht
+        </p>
+      </div>
+    </header>
+
+
+    <main class="app-content">
+
+      <!-- WELKOM -->
+      <section
+        class="screen"
+        id="welcomeScreen"
+      >
+        <div class="welcome-card">
+          <img
+            src="adllogo.png"
+            alt="ADL2000"
+            class="welcome-logo"
+          >
+
+          <span class="eyebrow">
+            Welkom
+          </span>
+
+          <h2>
+            Jouw competitie in één overzicht
+          </h2>
+
+          <p>
+            Kies één keer je speler.
+            Daarna opent ADL2000 automatisch
+            jouw persoonlijke dashboard.
+          </p>
+
+          <button
+            class="primary-button"
+            id="startButton"
+          >
+            Kies speler
+          </button>
+        </div>
+      </section>
+
+
+      <!-- SPELER KIEZEN -->
+      <section
+        class="screen"
+        id="playerSelectScreen"
+        hidden
+      >
+        <button
+          class="text-button"
+          id="backButton"
+        >
+          ← Terug
+        </button>
+
+        <div class="section-heading">
+          <span class="eyebrow">
+            Mijn ADL2000
+          </span>
+
+          <h2>
+            Kies je speler
+          </h2>
+
+          <p class="muted">
+            Typ minstens twee letters van je naam.
+          </p>
+        </div>
+
+        <input
+          class="search-input"
+          type="search"
+          id="playerSearch"
+          placeholder="Zoek op naam..."
+          autocomplete="off"
+        >
+
+        <div
+          class="status-text"
+          id="playerSearchStatus"
+        ></div>
+
+        <div
+          class="player-results"
+          id="playerResults"
+        ></div>
+      </section>
+
+
+      <!-- HOME -->
+      <section
+        class="screen"
+        id="homeScreen"
+        hidden
+      >
+        <div class="home-greeting">
+          <p class="eyebrow">
+            Mijn ADL2000
+          </p>
+
+          <h2 id="homeGreeting">
+            Welkom
+          </h2>
+        </div>
+
+
+        <article class="dashboard-card player-card">
+          <div class="player-card-main">
+            <div class="player-avatar">
+              ♙
+            </div>
+
+            <div>
+              <span class="card-label">
+                Speler
+              </span>
+
+              <h3 id="homePlayerName">
+                —
+              </h3>
+
+              <p id="homeTeam">
+                —
+              </p>
+            </div>
+          </div>
+
+          <div class="tsp-badge">
+            <span>TSP</span>
+            <strong id="homeTsp">—</strong>
+          </div>
+        </article>
+
+
+        <article class="dashboard-card">
+          <div class="card-heading">
+            <div>
+              <span class="card-label">
+                Stand
+              </span>
+
+              <h3 id="homeDivision">
+                Jouw reeks
+              </h3>
+            </div>
+
+            <button
+              class="link-button"
+              data-nav="stand"
+            >
+              Volledig →
+            </button>
+          </div>
+
+          <div
+            id="standSnippet"
+            class="loading-box"
+          >
+            Stand laden...
+          </div>
+        </article>
+
+
+        <article class="dashboard-card match-section">
+          <div class="match-title">
+            <span class="match-icon">
+              ✓
+            </span>
+
+            <span class="card-label">
+              Vorige wedstrijd
+            </span>
+          </div>
+
+          <div
+            id="previousMatch"
+            class="match-card"
+          >
+            <span class="muted">
+              Wedstrijd laden...
+            </span>
+          </div>
+        </article>
+
+
+        <article class="dashboard-card match-section">
+          <div class="match-title">
+            <span class="match-icon">
+              ›
+            </span>
+
+            <span class="card-label">
+              Volgende wedstrijd
+            </span>
+          </div>
+
+          <div
+            id="nextMatch"
+            class="match-card"
+          >
+            <span class="muted">
+              Wedstrijd laden...
+            </span>
+          </div>
+        </article>
+      </section>
+
+
+      <!-- STAND -->
+      <section
+        class="screen"
+        id="standScreen"
+        hidden
+      >
+        <div class="section-heading">
+          <span class="eyebrow">
+            Competitie
+          </span>
+
+          <h2>
+            Stand
+          </h2>
+
+          <p
+            id="standDescription"
+            class="muted"
+          >
+            Jouw reeks
+          </p>
+        </div>
+
+        <div id="fullStand"></div>
+      </section>
+
+
+      <!-- KALENDER -->
+      <section
+        class="screen"
+        id="calendarScreen"
+        hidden
+      >
+        <div class="section-heading">
+          <span class="eyebrow">
+            Competitie
+          </span>
+
+          <h2>
+            Kalender & uitslagen
+          </h2>
+
+          <p
+            id="calendarDescription"
+            class="muted"
+          >
+            Jouw reeks
+          </p>
+        </div>
+
+        <div class="segmented">
+          <button
+            class="segment active"
+            type="button"
+            data-calendar-mode="team"
+          >
+            Mijn ploeg
+          </button>
+
+          <button
+            class="segment"
+            type="button"
+            data-calendar-mode="all"
+          >
+            Alle wedstrijden
+          </button>
+        </div>
+
+        <div id="calendarContent"></div>
+      </section>
+
+
+      <!-- ANDERE REEKSEN -->
+      <section
+        class="screen"
+        id="seriesScreen"
+        hidden
+      >
+        <div class="section-heading">
+          <span class="eyebrow">
+            Competitie
+          </span>
+
+          <h2>
+            Andere reeksen
+          </h2>
+
+          <p class="muted">
+            Bekijk een andere afdeling zonder
+            je ingestelde speler te wijzigen.
+          </p>
+        </div>
+
+        <div
+          class="series-grid"
+          id="seriesGrid"
+        ></div>
+      </section>
+
+
+      <!-- OVERIGE -->
+      <section
+        class="screen"
+        id="moreScreen"
+        hidden
+      >
+        <div class="section-heading">
+          <span class="eyebrow">
+            Meer
+          </span>
+
+          <h2>
+            Overige
+          </h2>
+        </div>
+
+        <div class="menu-list">
+
+          <button
+            class="menu-row"
+            id="searchOtherPlayer"
+          >
+            <span class="menu-row-text">
+              <strong>Speler zoeken</strong>
+              <small>Zoek een andere speler</small>
+            </span>
+
+            <span>›</span>
+          </button>
+
+
+          <button
+            class="menu-row"
+            data-coming="Records"
+          >
+            <span class="menu-row-text">
+              <strong>Records</strong>
+              <small>Bekijk de records van ADL2000</small>
+            </span>
+
+            <span>›</span>
+          </button>
+
+
+          <button
+            class="menu-row"
+            data-coming="Lokalen & adressen"
+          >
+            <span class="menu-row-text">
+              <strong>Lokalen & adressen</strong>
+              <small>Overzicht van de speellokalen</small>
+            </span>
+
+            <span>›</span>
+          </button>
+
+
+          <button
+            class="menu-row danger-row"
+            id="changePlayer"
+          >
+            <span class="menu-row-text">
+              <strong>Andere speler kiezen</strong>
+              <small>Wijzig je persoonlijke dashboard</small>
+            </span>
+
+            <span>›</span>
+          </button>
+
+        </div>
+      </section>
+
+    </main>
+
+
+    <nav
+      class="bottom-nav"
+      id="bottomNav"
+      hidden
+      aria-label="Hoofdnavigatie"
+    >
+      <button
+        class="nav-item active"
+        data-nav="home"
+      >
+        <span class="nav-icon">⌂</span>
+        <span>Home</span>
+      </button>
+
+      <button
+        class="nav-item"
+        data-nav="stand"
+      >
+        <span class="nav-icon">♜</span>
+        <span>Stand</span>
+      </button>
+
+      <button
+        class="nav-item"
+        data-nav="calendar"
+      >
+        <span class="nav-icon">▣</span>
+        <span>Kalender</span>
+      </button>
+
+      <button
+        class="nav-item"
+        data-nav="series"
+      >
+        <span class="nav-icon">▱</span>
+        <span>Andere reeksen</span>
+      </button>
+
+      <button
+        class="nav-item"
+        data-nav="more"
+      >
+        <span class="nav-icon">•••</span>
+        <span>Overige</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
