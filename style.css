@@ -1297,3 +1297,754 @@ button {
     border-radius: 0;
   }
 }
+
+
+/* =========================================================
+   ADL2000 - GERICHTE VISUELE AFWERKING
+   ========================================================= */
+
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid #c9dcd2;
+  border-radius: 13px;
+  background: #f7faf8;
+  color: var(--green-dark);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(17, 55, 37, .05);
+}
+
+/* 1. Home - vorige / volgende wedstrijd */
+
+.match-section {
+  text-align: center;
+}
+
+.match-title {
+  justify-content: center;
+  margin-bottom: 13px;
+}
+
+.match-card {
+  padding: 17px 16px;
+  text-align: center;
+}
+
+.match-date,
+.match-meta {
+  text-align: center;
+}
+
+.match-teams {
+  align-items: center;
+  text-align: center;
+}
+
+.match-score {
+  margin: 13px auto 0;
+}
+
+.match-card[role="button"]::after {
+  text-align: center;
+}
+
+/* 2 + 3. Stand - Ploegen / Individueel */
+
+#standModeControls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin: 0 0 18px;
+  padding: 4px;
+  border: 1px solid #d5e2db;
+  border-radius: 15px;
+  background: #e7efeb;
+}
+
+#standModeControls .primary-button,
+#standModeControls .secondary-button {
+  width: 100%;
+  min-height: 43px;
+  margin: 0;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: 11px;
+  box-shadow: none;
+  font-size: 13px;
+}
+
+#standModeControls .primary-button {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 5px 13px rgba(8, 120, 63, .16);
+}
+
+#standModeControls .secondary-button {
+  background: transparent;
+  color: #617269;
+}
+
+.individual-stand-table {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 7px 20px rgba(17, 55, 37, .06);
+  -webkit-overflow-scrolling: touch;
+}
+
+.individual-stand-row {
+  display: grid;
+  grid-template-columns: 30px minmax(145px, 1.6fr) minmax(135px, 1.35fr) 42px 48px 42px 58px;
+  align-items: center;
+  gap: 7px;
+  min-width: 680px;
+  min-height: 50px;
+  padding: 8px 11px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+
+.individual-stand-row:last-child {
+  border-bottom: 0;
+}
+
+.individual-stand-header {
+  min-height: 40px;
+  background: #edf4f0;
+  color: #607168;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.individual-stand-row > span:nth-child(n+4) {
+  text-align: center;
+}
+
+.individual-stand-row.my-team {
+  background: linear-gradient(90deg, #daf2e4, #eef9f3);
+  color: var(--green-dark);
+}
+
+/* 4. Kalenderfilters */
+
+#calendarContent > .series-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  margin: 0 0 22px;
+  padding: 4px;
+  border: 1px solid #d5e2db;
+  border-radius: 15px;
+  background: #e7efeb;
+}
+
+#calendarContent > .series-actions .primary-button,
+#calendarContent > .series-actions .secondary-button {
+  width: 100%;
+  min-height: 39px;
+  margin: 0;
+  padding: 8px 5px;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: none;
+  font-size: 11px;
+}
+
+#calendarContent > .series-actions .primary-button {
+  background: var(--green);
+  color: #fff;
+}
+
+#calendarContent > .series-actions .secondary-button {
+  background: transparent;
+  color: #607168;
+}
+
+/* 5. Andere reeksen */
+
+.series-grid {
+  gap: 12px;
+}
+
+.series-button {
+  min-height: 105px;
+  padding: 18px;
+  border: 1px solid #d5e3db;
+  border-radius: 17px;
+  box-shadow: 0 6px 18px rgba(17, 55, 37, .06);
+}
+
+.series-button strong {
+  font-size: 27px;
+}
+
+.series-button span {
+  margin-top: 3px;
+  font-size: 12px;
+}
+
+.series-detail {
+  padding-top: 2px;
+}
+
+.series-back-button {
+  margin-bottom: 20px;
+}
+
+.series-detail-heading {
+  margin-bottom: 17px;
+  padding: 17px;
+  border: 1px solid #dbe7e0;
+  border-radius: 16px;
+  background: #f5f9f7;
+}
+
+.series-detail-heading h3 {
+  margin: 3px 0 4px;
+  font-size: 24px;
+}
+
+.series-detail .series-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 20px;
+  padding: 4px;
+  border: 1px solid #d5e2db;
+  border-radius: 15px;
+  background: #e7efeb;
+}
+
+.series-detail .series-actions .primary-button,
+.series-detail .series-actions .secondary-button {
+  width: 100%;
+  min-height: 43px;
+  margin: 0;
+  border: 0;
+  border-radius: 11px;
+  box-shadow: none;
+}
+
+.series-detail .series-actions .secondary-button {
+  background: transparent;
+}
+
+/* 6. Persoonlijke statistieken */
+
+#playerStatsContent > .dashboard-card:first-child {
+  border-color: #cfe3d8;
+  background: linear-gradient(145deg, #f9fcfa, #eef7f2);
+}
+
+.player-stats-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.player-stats-summary > div {
+  min-width: 0;
+  padding: 12px 10px;
+  border: 1px solid #dce8e1;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, .7);
+  text-align: center;
+}
+
+.player-stats-summary span {
+  display: block;
+  margin-bottom: 5px;
+  color: #63736b;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.player-stats-summary strong {
+  display: block;
+  color: var(--green-dark);
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.player-stats-summary small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+#playerStatsContent > .section-heading {
+  margin-top: 26px;
+  margin-bottom: 10px;
+}
+
+#playerStatsRecords > .dashboard-card,
+#playerStatsTsp > .dashboard-card,
+#playerStatsHistory > .dashboard-card,
+#playerStatsTspChanges > .dashboard-card {
+  margin-bottom: 10px;
+}
+
+/* 7 + 8. Records */
+
+.records-type-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin-bottom: 24px;
+  padding: 4px;
+  border: 1px solid #d5e2db;
+  border-radius: 15px;
+  background: #e7efeb;
+}
+
+.records-tab,
+.records-category-tab {
+  appearance: none;
+  border: 0;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.records-tab {
+  min-height: 44px;
+  padding: 9px 8px;
+  border-radius: 11px;
+  background: transparent;
+  color: #607168;
+  font-size: 12px;
+}
+
+.records-tab.active {
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 5px 13px rgba(8, 120, 63, .16);
+}
+
+.records-result-heading {
+  margin-bottom: 12px;
+}
+
+.records-category-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.records-category-tab {
+  min-height: 40px;
+  padding: 8px 5px;
+  border: 1px solid #cfe0d7;
+  border-radius: 11px;
+  background: #f5f9f7;
+  color: var(--green-dark);
+  font-size: 11px;
+}
+
+.records-category-tab.active {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
+  box-shadow: 0 5px 13px rgba(8, 120, 63, .15);
+}
+
+.records-category-card {
+  padding: 14px;
+}
+
+.records-category-card .card-heading {
+  margin-bottom: 12px;
+}
+
+.records-table {
+  overflow: hidden;
+  border: 1px solid #dce7e1;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.records-row {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 45px 42px 52px;
+  align-items: center;
+  gap: 5px;
+  min-height: 48px;
+  padding: 8px 7px;
+  border-bottom: 1px solid #e1e9e4;
+  font-size: 10px;
+}
+
+.records-row:last-child {
+  border-bottom: 0;
+}
+
+.records-header {
+  min-height: 36px;
+  background: #edf4f0;
+  color: #617269;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.records-row > span:not(:nth-child(2)) {
+  text-align: center;
+}
+
+.records-row strong {
+  line-height: 1.25;
+}
+
+.records-row small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.empty-state.compact {
+  padding: 12px;
+}
+
+/* Desktop */
+@media (min-width: 521px) {
+  .player-stats-summary {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .series-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+
+/* =========================================================
+   ADL2000 - DEFINITIEVE MOBIELE AFWERKING
+   ========================================================= */
+
+/* Volledige ploegenstand */
+.stand-table-full {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.stand-table-full .stand-row {
+  display: grid;
+  grid-template-columns: 25px minmax(0, 1fr) 31px 24px 24px 24px 58px;
+  gap: 3px;
+  align-items: center;
+  min-height: 50px;
+  padding: 7px 7px;
+}
+
+.stand-table-full .stand-header {
+  min-height: 39px;
+  font-size: 8px;
+  letter-spacing: .02em;
+}
+
+.stand-table-full .stand-team {
+  min-width: 0;
+  padding-right: 3px;
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 750;
+  line-height: 1.18;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stand-table-full .stand-position,
+.stand-table-full .stand-gsp,
+.stand-table-full .stand-points,
+.stand-table-full .stand-row > span:nth-child(n+3) {
+  text-align: center;
+}
+
+.stand-table-full .stand-points {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+/* Wedstrijddetail */
+#matchDetailScreen {
+  padding-bottom: 92px;
+}
+
+.match-detail-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  margin: 18px 0 22px;
+  padding: 18px 14px;
+  border: 1px solid #d7e4dc;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f9fcfa, #edf6f1);
+  box-shadow: 0 8px 22px rgba(17, 55, 37, .06);
+}
+
+.match-detail-team {
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.match-detail-score {
+  padding: 9px 11px;
+  border-radius: 11px;
+  background: #dff3e7;
+  color: var(--green-dark);
+  font-size: 19px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.match-detail-score span {
+  padding: 0 2px;
+}
+
+.match-detail-heading {
+  margin-bottom: 11px;
+}
+
+.match-detail-games {
+  display: grid;
+  gap: 11px;
+}
+
+.match-game-card {
+  padding: 14px;
+  border: 1px solid #d9e5de;
+  border-radius: 17px;
+  background: #f8fbf9;
+  box-shadow: 0 6px 17px rgba(17, 55, 37, .05);
+}
+
+.match-game-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.match-game-top strong {
+  color: var(--green-dark);
+  font-size: 12px;
+}
+
+.match-game-versus {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 25px minmax(0, 1fr);
+  gap: 7px;
+  align-items: stretch;
+}
+
+.match-game-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #819088;
+  font-size: 8px;
+  font-weight: 950;
+}
+
+.match-game-player {
+  min-width: 0;
+  padding: 11px 8px;
+  border: 1px solid #dce8e1;
+  border-radius: 13px;
+  background: #fff;
+  text-align: center;
+}
+
+.match-game-side {
+  display: block;
+  margin-bottom: 4px;
+  color: #728078;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.match-game-name {
+  display: block;
+  min-height: 32px;
+  color: var(--green-dark);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.match-game-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 3px;
+  margin-top: 9px;
+}
+
+.match-game-stats span {
+  min-width: 0;
+}
+
+.match-game-stats small,
+.match-game-stats b {
+  display: block;
+}
+
+.match-game-stats small {
+  color: #7b8981;
+  font-size: 6px;
+  font-weight: 900;
+}
+
+.match-game-stats b {
+  margin-top: 2px;
+  color: var(--text);
+  font-size: 8px;
+}
+
+/* Carrièrehistoriek */
+.player-history-table {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #d9e5de;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(17, 55, 37, .05);
+}
+
+.player-history-row {
+  display: grid;
+  grid-template-columns: 70px 34px 52px 35px 25px 25px 25px minmax(38px, 1fr);
+  gap: 2px;
+  align-items: center;
+  min-height: 43px;
+  padding: 7px 7px;
+  border-bottom: 1px solid #e1e9e4;
+  font-size: 9px;
+  text-align: center;
+}
+
+.player-history-row:last-child {
+  border-bottom: 0;
+}
+
+.player-history-row > span:first-child {
+  text-align: left;
+}
+
+.player-history-header {
+  min-height: 36px;
+  background: #edf4f0;
+  color: #63736b;
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+
+/* Records - leesbaar i.p.v. microscopisch */
+.records-category-card {
+  padding: 13px 10px;
+}
+
+.records-table {
+  overflow: visible;
+}
+
+.records-row {
+  grid-template-columns: 28px minmax(0, 1fr) 48px 44px 50px;
+  gap: 5px;
+  min-height: 58px;
+  padding: 9px 6px;
+  font-size: 11px;
+}
+
+.records-header {
+  min-height: 38px;
+  font-size: 8px;
+}
+
+.records-row > span:nth-child(2) {
+  min-width: 0;
+}
+
+.records-row strong {
+  display: block;
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.records-row small {
+  display: block;
+  margin-top: 4px;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.records-row > span:not(:nth-child(2)) {
+  font-weight: 700;
+}
+
+/* Onderste navigatie altijd boven details */
+.bottom-nav {
+  z-index: 100;
+}
+
+@media (max-width: 390px) {
+  .stand-table-full .stand-row {
+    grid-template-columns: 22px minmax(0, 1fr) 28px 22px 22px 22px 52px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .stand-table-full .stand-team {
+    font-size: 10px;
+  }
+
+  .match-game-card {
+    padding: 12px 9px;
+  }
+
+  .match-game-versus {
+    gap: 4px;
+  }
+
+  .match-game-player {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .player-history-row {
+    grid-template-columns: 62px 30px 48px 30px 22px 22px 22px minmax(34px, 1fr);
+    padding-left: 4px;
+    padding-right: 4px;
+    font-size: 8px;
+  }
+}
