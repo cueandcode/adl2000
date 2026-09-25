@@ -3089,3 +3089,90 @@ button {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* =========================================================
+   DESKTOP / LAPTOP LAYOUT
+   Mobiele layout blijft ongewijzigd
+   ========================================================= */
+
+@media (min-width: 900px) {
+
+  .app {
+    width: min(100%, 1180px);
+    max-width: 1180px;
+  }
+
+  .app-content {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .bottom-nav {
+    width: min(100%, 1180px);
+  }
+}
+
+/* =========================================================
+   DESKTOP HOME
+   Alleen actief op laptop / desktop
+   Mobiele layout blijft volledig ongewijzigd
+   ========================================================= */
+
+@media (min-width: 900px) {
+
+  /* Home wordt een grid */
+  #homeScreen {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    align-items: start;
+  }
+
+  /* hidden moet altijd winnen */
+  #homeScreen[hidden] {
+    display: none !important;
+  }
+
+  /* Begroeting over volledige breedte */
+  #homeScreen .home-greeting {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  /* Spelerkaart over volledige breedte */
+  #homeScreen > .player-card {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  /* Alle overige kaarten */
+  #homeScreen > .dashboard-card:not(.player-card) {
+    margin-bottom: 0;
+    height: 100%;
+  }
+
+  /* Stand links */
+  #homeScreen > .dashboard-card:nth-of-type(2) {
+    grid-column: 1;
+  }
+
+  /* Vorige wedstrijd rechts */
+  #homeScreen > .dashboard-card:nth-of-type(3) {
+    grid-column: 2;
+  }
+
+  /* Volgende wedstrijd onderaan over volledige breedte */
+  #homeScreen > .dashboard-card:nth-of-type(4) {
+    grid-column: 1 / -1;
+  }
+
+  /* Iets meer ademruimte in desktopkaarten */
+  #homeScreen .dashboard-card {
+    padding: 20px;
+  }
+
+  /* Stand hoeft op desktop geen extra binnenmarge te krijgen */
+  #homeScreen #standSnippet {
+    margin-top: 14px;
+  }
+}
