@@ -7,6 +7,7 @@ const screens = {
   home: document.getElementById('homeScreen'),
   stand: document.getElementById('standScreen'),
   calendar: document.getElementById('calendarScreen'),
+  matchday: document.getElementById('matchdayScreen'),
   series: document.getElementById('seriesScreen'),
   more: document.getElementById('moreScreen'),
   records: document.getElementById('recordsScreen'),
@@ -24,6 +25,8 @@ let overviewCache = {};
 let calendarCache = {};
 let calendarMode = 'team';
 let calendarStatusFilter = 'all';
+let matchdayWeek = null;
+let matchdayLatestWeek = null;
 let selectedSeries = null;
 let standMode = 'ploegen';
 let seriesStandMode = 'ploegen';
@@ -32,6 +35,8 @@ let viewedPlayer = null;
 let matchDetailReturn = 'home';
 let selectedRecordType = 'kortste';
 let selectedRecordCategory = '13-19';
+let playerStatsMode = 'season';
+let playerStatsRenderCache = null;
 
 init();
 
@@ -42,6 +47,7 @@ function init() {
   bindPlayerSearch();
   bindMoreMenu();
   bindCalendarMode();
+  bindMatchdayNavigation();
   bindStandMode();
   bindMatchDetail();
   registerServiceWorker();
@@ -65,6 +71,7 @@ function showOnly(name) {
     'home',
     'stand',
     'calendar',
+    'matchday',
     'series',
     'more',
     'records',
@@ -101,6 +108,10 @@ async function showMainScreen(name) {
 
   if (name === 'calendar') {
     await loadCalendar();
+  }
+
+  if (name === 'matchday') {
+    await loadMatchday();
   }
 
   if (name === 'series') {
@@ -334,6 +345,14 @@ function fillPlayerData() {
 
   calendarDescription.textContent =
     `${currentPlayer.team} · Afdeling ${currentPlayer.afdeling}`;
+
+  const matchdayDescription =
+    document.getElementById('matchdayDescription');
+
+  if (matchdayDescription) {
+    matchdayDescription.textContent =
+      `Afdeling ${currentPlayer.afdeling}`;
+  }
 }
 
 
@@ -1438,6 +1457,289 @@ function bindCalendarMode() {
   });
 }
 
+
+
+function bindMatchdayNavigation() {
+  const previousButton =
+    document.getElementById('matchdayPreviousWeek');
+  const nextButton =
+    document.getElementById('matchdayNextWeek');
+
+  if (previousButton) {
+    previousButton.addEventListener('click', async () => {
+      if (!Number.isFinite(matchdayWeek) || matchdayWeek <= 1) {
+        return;
+      }
+
+      matchdayWeek -= 1;
+      await loadMatchday(matchdayWeek);
+    });
+  }
+
+  if (nextButton) {
+    nextButton.addEventListener('click', async () => {
+      if (!Number.isFinite(matchdayWeek)) {
+        return;
+      }
+
+      const maxWeek = matchdayLatestWeek || 30;
+
+      if (matchdayWeek >= maxWeek) {
+        return;
+      }
+
+      matchdayWeek += 1;
+      await loadMatchday(matchdayWeek);
+    });
+  }
+}
+
+async function findLatestPlayedMatchdayWeek() {
+  const overview = await getOverview();
+  const startWeek = Math.min(
+    Math.max(Number(overview.actueleSpeelweek) || 1, 1),
+    30
+  );
+
+  for (let week = startWeek; week >= 1; week -= 1) {
+    try {
+      const response = await fetch(
+        `${API_URL}/?type=uitslagen` +
+        `&afdeling=${encodeURIComponent(currentPlayer.afdeling)}` +
+        `&speelweek=${encodeURIComponent(week)}`
+      );
+
+      if (!response.ok) {
+        continue;
+      }
+
+      const data = await response.json();
+      const results = Array.isArray(data.uitslagen)
+        ? data.uitslagen
+        : [];
+
+      if (results.length) {
+        return week;
+      }
+    } catch {
+      // Probeer de vorige speelweek.
+    }
+  }
+
+  return startWeek;
+}
+
+async function loadMatchday(requestedWeek = null) {
+  const container =
+    document.getElementById('matchdayContent');
+  const title =
+    document.getElementById('matchdayWeekTitle');
+  const previousButton =
+    document.getElementById('matchdayPreviousWeek');
+  const nextButton =
+    document.getElementById('matchdayNextWeek');
+
+  if (!container || !title) {
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="empty-state">
+      <strong>Speeldag laden...</strong>
+    </div>
+  `;
+
+  try {
+    if (!Number.isFinite(matchdayLatestWeek)) {
+      matchdayLatestWeek =
+        await findLatestPlayedMatchdayWeek();
+    }
+
+    if (requestedWeek === null) {
+      matchdayWeek = matchdayLatestWeek;
+    } else {
+      matchdayWeek = Math.max(
+        1,
+        Math.min(Number(requestedWeek) || 1, matchdayLatestWeek || 30)
+      );
+    }
+
+    title.textContent = `Speelweek ${matchdayWeek}`;
+
+    if (previousButton) {
+      previousButton.disabled = matchdayWeek <= 1;
+    }
+
+    if (nextButton) {
+      nextButton.disabled =
+        matchdayWeek >= (matchdayLatestWeek || matchdayWeek);
+    }
+
+    const response = await fetch(
+      `${API_URL}/?type=uitslagen` +
+      `&afdeling=${encodeURIComponent(currentPlayer.afdeling)}` +
+      `&speelweek=${encodeURIComponent(matchdayWeek)}`
+    );
+
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+
+    const data = await response.json();
+    const matches = Array.isArray(data.uitslagen)
+      ? data.uitslagen
+      : [];
+
+    renderMatchday(matches);
+  } catch (error) {
+    console.error(error);
+
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Speeldag kon niet geladen worden</strong>
+        <p>Probeer het later opnieuw.</p>
+      </div>
+    `;
+  }
+}
+
+function renderMatchday(matches) {
+  const container =
+    document.getElementById('matchdayContent');
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = '';
+
+  if (!matches.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Geen uitslagen gevonden</strong>
+        <p>Voor deze speelweek zijn nog geen wedstrijden ingevuld.</p>
+      </div>
+    `;
+    return;
+  }
+
+  matches.forEach(match => {
+    const card = document.createElement('article');
+    card.className = 'matchday-match';
+
+    if (
+      normalize(match.thuisploeg) === normalize(currentPlayer.team) ||
+      normalize(match.uitploeg) === normalize(currentPlayer.team)
+    ) {
+      card.classList.add('my-match');
+    }
+
+    const partijen = Array.isArray(match.partijen)
+      ? match.partijen
+      : [];
+
+    const rows = partijen.map((partij, index) => {
+      const thuis = partij.thuis || {};
+      const uit = partij.uit || {};
+      const brt = partij.brt ?? '–';
+
+      const thuisGsp = Number(thuis.gsp);
+      const uitGsp = Number(uit.gsp);
+      const heeftUitslag =
+        Number.isFinite(thuisGsp) &&
+        Number.isFinite(uitGsp) &&
+        thuisGsp !== uitGsp;
+
+      const thuisResultClass =
+        heeftUitslag
+          ? (thuisGsp > uitGsp ? 'matchday-player-win' : 'matchday-player-loss')
+          : '';
+
+      const uitResultClass =
+        heeftUitslag
+          ? (uitGsp > thuisGsp ? 'matchday-player-win' : 'matchday-player-loss')
+          : '';
+
+      return `
+        <div class="matchday-game-row">
+          <div class="matchday-player matchday-player-home ${thuisResultClass}">
+            <strong>${esc(thuis.naam || '–')}</strong>
+            <div class="matchday-player-stats">
+              <span><small>HR</small>${esc(thuis.hr ?? '–')}</span>
+              <span><small>MOY</small>${formatMoyenne(thuis.moyenne)}</span>
+              <span><small>TSP</small>${esc(thuis.tsp ?? '–')}</span>
+              <span><small>PTN</small>${formatStandNumber(thuis.ptn)}</span>
+              <span class="matchday-gsp"><small>GSP</small>${esc(thuis.gsp ?? '–')}</span>
+            </div>
+          </div>
+
+          <div class="matchday-brt">
+            <small>BRT</small>
+            <strong>${esc(brt)}</strong>
+          </div>
+
+          <div class="matchday-player matchday-player-away ${uitResultClass}">
+            <strong>${esc(uit.naam || '–')}</strong>
+            <div class="matchday-player-stats">
+              <span class="matchday-gsp"><small>GSP</small>${esc(uit.gsp ?? '–')}</span>
+              <span><small>PTN</small>${formatStandNumber(uit.ptn)}</span>
+              <span><small>TSP</small>${esc(uit.tsp ?? '–')}</span>
+              <span><small>MOY</small>${formatMoyenne(uit.moyenne)}</span>
+              <span><small>HR</small>${esc(uit.hr ?? '–')}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    card.innerHTML = `
+      <button
+        class="matchday-match-head"
+        type="button"
+        aria-label="Bekijk wedstrijddetails"
+      >
+        <span class="matchday-team matchday-team-home">
+          ${esc(match.thuisploeg)}
+        </span>
+
+        <span class="matchday-score">
+          ${esc(match.thuisPunten ?? '–')}
+          <b>–</b>
+          ${esc(match.uitPunten ?? '–')}
+        </span>
+
+        <span class="matchday-team matchday-team-away">
+          ${esc(match.uitploeg)}
+        </span>
+      </button>
+
+      <div class="matchday-games">
+        ${
+          rows || `
+            <div class="matchday-no-games">
+              Nog geen individuele partijen ingevuld.
+            </div>
+          `
+        }
+      </div>
+    `;
+
+    const head = card.querySelector('.matchday-match-head');
+
+    if (head && match.ontmoetingId) {
+      head.addEventListener('click', () => {
+        openMatchDetail(
+          currentPlayer.afdeling,
+          matchdayWeek,
+          match.ontmoetingId,
+          'matchday'
+        );
+      });
+    }
+
+    container.appendChild(card);
+  });
+}
 
 function formatDate(value) {
   if (!value) {
@@ -2912,6 +3214,11 @@ function bindMatchDetail() {
       return;
     }
 
+    if (matchDetailReturn === 'matchday') {
+      showMainScreen('matchday');
+      return;
+    }
+
     if (matchDetailReturn === 'series') {
       const returnSeries = selectedSeries;
 
@@ -3005,28 +3312,28 @@ function renderMatchDetail(container, match) {
       : [];
 
   container.innerHTML = `
-    <article class="match-detail-hero">
-      <div class="match-detail-team">
+    <article class="match-detail-hero match-detail-hero-compact">
+      <div class="match-detail-team match-detail-team-home">
         ${esc(match.thuisploeg)}
       </div>
 
       <div class="match-detail-score">
-        ${esc(match.thuisPunten)}
+        ${esc(match.thuisPunten ?? '–')}
         <span>–</span>
-        ${esc(match.uitPunten)}
+        ${esc(match.uitPunten ?? '–')}
       </div>
 
-      <div class="match-detail-team">
+      <div class="match-detail-team match-detail-team-away">
         ${esc(match.uitploeg)}
       </div>
     </article>
 
-    <div class="section-heading match-detail-heading">
-      <span class="eyebrow">Wedstrijd</span>
-      <h3>Individuele partijen</h3>
+    <div class="match-detail-table-heading">
+      <span>Partijen</span>
+      <strong>${partijen.length}</strong>
     </div>
 
-    <div id="matchDetailGames" class="match-detail-games"></div>
+    <div id="matchDetailGames" class="match-detail-games match-detail-games-compact"></div>
   `;
 
   const gamesContainer =
@@ -3042,18 +3349,37 @@ function renderMatchDetail(container, match) {
   }
 
   partijen.forEach((partij, index) => {
+    const thuis = partij.thuis || {};
+    const uit = partij.uit || {};
+    const brt = partij.brt ?? '–';
+
     const card = document.createElement('article');
-    card.className = 'match-game-card';
+    card.className = 'match-detail-party';
 
     card.innerHTML = `
-      <div class="match-game-top">
-  <span class="card-label">Partij ${index + 1}</span>
-</div>
+      <div class="match-detail-party-title">
+        <span>Partij ${index + 1}</span>
+        <span class="match-detail-party-brt">
+          BRT <strong>${esc(brt)}</strong>
+        </span>
+      </div>
 
-      <div class="match-game-versus">
-        ${renderMatchDetailPlayer('Thuis', partij.thuis, partij.brt)}
-<div class="match-game-vs">VS</div>
-${renderMatchDetailPlayer('Uit', partij.uit, partij.brt)}
+      <div class="match-detail-party-player match-detail-party-player-home">
+        <div class="match-detail-party-name">
+          <small>Thuis</small>
+          <strong>${esc(thuis.naam || '–')}</strong>
+        </div>
+
+        ${renderMatchDetailStats(thuis)}
+      </div>
+
+      <div class="match-detail-party-player match-detail-party-player-away">
+        <div class="match-detail-party-name">
+          <small>Uit</small>
+          <strong>${esc(uit.naam || '–')}</strong>
+        </div>
+
+        ${renderMatchDetailStats(uit)}
       </div>
     `;
 
@@ -3061,20 +3387,15 @@ ${renderMatchDetailPlayer('Uit', partij.uit, partij.brt)}
   });
 }
 
-function renderMatchDetailPlayer(label, player, brt) {
-  return `
-    <div class="match-game-player">
-      <span class="match-game-side">${esc(label)}</span>
-      <strong class="match-game-name">${esc(player?.naam || '–')}</strong>
 
-      <div class="match-game-stats">
-        <span><small>TSP</small><b>${esc(player?.tsp ?? '–')}</b></span>
-        <span><small>GSP</small><b>${esc(player?.gsp ?? '–')}</b></span>
-        <span><small>BRT</small><b>${esc(brt ?? '–')}</b></span>
-        <span><small>MOY</small><b>${formatMoyenne(player?.moyenne)}</b></span>
-        <span><small>HR</small><b>${esc(player?.hr ?? '–')}</b></span>
-        <span class="match-game-ptn"><small>PTN</small><b>${formatStandNumber(player?.ptn)}</b></span>
-      </div>
+function renderMatchDetailStats(player) {
+  return `
+    <div class="match-detail-party-stats">
+      <span><small>TSP</small><b>${esc(player?.tsp ?? '–')}</b></span>
+      <span><small>GSP</small><b>${esc(player?.gsp ?? '–')}</b></span>
+      <span><small>MOY</small><b>${formatMoyenne(player?.moyenne)}</b></span>
+      <span><small>HR</small><b>${esc(player?.hr ?? '–')}</b></span>
+      <span class="match-detail-party-ptn"><small>PTN</small><b>${formatStandNumber(player?.ptn)}</b></span>
     </div>
   `;
 }
@@ -3409,6 +3730,8 @@ function renderRecords(
 
 function openPlayerStats(player = currentPlayer) {
   viewedPlayer = player || currentPlayer;
+  playerStatsMode = 'season';
+  playerStatsRenderCache = null;
   showOnly('playerStats');
 
   document.querySelectorAll('.nav-item').forEach(button => {
@@ -3495,16 +3818,96 @@ function renderPlayerStats(container, data, historyData, profilePlayer = current
       ? data.wedstrijden
       : [];
 
+  playerStatsRenderCache = {
+    container,
+    data,
+    historyData,
+    profilePlayer
+  };
+
   container.innerHTML = `
-    <article class="dashboard-card">
+    <div class="player-stats-mode segmented">
+      <button
+        class="segment ${playerStatsMode === 'season' ? 'active' : ''}"
+        data-player-stats-mode="season"
+        type="button"
+      >
+        Huidig seizoen
+      </button>
+
+      <button
+        class="segment ${playerStatsMode === 'alltime' ? 'active' : ''}"
+        data-player-stats-mode="alltime"
+        type="button"
+      >
+        All time
+      </button>
+    </div>
+
+    <div id="playerStatsModeContent"></div>
+  `;
+
+  container
+    .querySelectorAll('[data-player-stats-mode]')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const mode = button.dataset.playerStatsMode;
+
+        if (mode === playerStatsMode) {
+          return;
+        }
+
+        playerStatsMode = mode;
+
+        if (playerStatsRenderCache) {
+          renderPlayerStats(
+            playerStatsRenderCache.container,
+            playerStatsRenderCache.data,
+            playerStatsRenderCache.historyData,
+            playerStatsRenderCache.profilePlayer
+          );
+        }
+      });
+    });
+
+  const modeContent =
+    document.getElementById('playerStatsModeContent');
+
+  if (playerStatsMode === 'alltime') {
+    renderPlayerStatsAllTime(
+      modeContent,
+      historyData,
+      profilePlayer
+    );
+  } else {
+    renderPlayerStatsSeason(
+      modeContent,
+      data,
+      summary,
+      matches,
+      profilePlayer
+    );
+  }
+}
+
+
+function renderPlayerStatsSeason(
+  container,
+  data,
+  summary,
+  matches,
+  profilePlayer
+) {
+  container.innerHTML = `
+    <article class="dashboard-card player-stats-overview-card">
       <div class="card-heading">
         <div>
-          <span class="card-label">Huidig seizoen</span>
+          <span class="card-label">Seizoen 2026-27</span>
           <h3>${esc(data.naam || profilePlayer?.naam || '')}</h3>
         </div>
       </div>
 
-      <div class="player-stats-summary">
+      <div class="player-stats-summary player-stats-season-summary">
         <div>
           <span>Wedstrijden</span>
           <strong>${esc(data.aantalWedstrijden ?? matches.length)}</strong>
@@ -3540,40 +3943,70 @@ function renderPlayerStats(container, data, historyData, profilePlayer = current
       </div>
     </article>
 
-    <div class="section-heading">
-      <span class="eyebrow">Carrière</span>
-      <h3>Persoonlijke records</h3>
+    <div class="section-heading player-stats-section-heading">
+      <span class="eyebrow">Huidig seizoen</span>
+      <h3>Moyenne per wedstrijd</h3>
     </div>
 
-    <div id="playerStatsRecords"></div>
+    <div id="playerStatsChart"></div>
 
-    <div class="section-heading">
-      <span class="eyebrow">Carrière</span>
-      <h3>TSP</h3>
-    </div>
-
-    <div id="playerStatsTsp"></div>
-
-    <div class="section-heading">
-      <span class="eyebrow">Carrière</span>
-      <h3>Historiek per seizoen</h3>
-    </div>
-
-    <div id="playerStatsHistory"></div>
-
-    <div class="section-heading">
-      <span class="eyebrow">Carrière</span>
-      <h3>TSP-wijzigingen</h3>
-    </div>
-
-    <div id="playerStatsTspChanges"></div>
-
-    <div class="section-heading">
+    <div class="section-heading player-stats-section-heading">
       <span class="eyebrow">Wedstrijden</span>
       <h3>Gespeelde partijen</h3>
     </div>
 
     <div id="playerStatsMatches"></div>
+  `;
+
+  renderPlayerStatsChart(
+    document.getElementById('playerStatsChart'),
+    matches
+  );
+
+  renderPlayerStatsMatches(
+    document.getElementById('playerStatsMatches'),
+    matches
+  );
+}
+
+
+function renderPlayerStatsAllTime(
+  container,
+  historyData,
+  profilePlayer
+) {
+  container.innerHTML = `
+    <article class="dashboard-card player-stats-alltime-intro">
+      <span class="card-label">Carrière</span>
+      <h3>${esc(profilePlayer?.naam || '')}</h3>
+      <p class="muted">
+        Persoonlijke records, TSP en historiek over alle beschikbare seizoenen.
+      </p>
+    </article>
+
+    <div class="section-heading player-stats-section-heading">
+      <span class="eyebrow">All time</span>
+      <h3>Persoonlijke records</h3>
+    </div>
+    <div id="playerStatsRecords"></div>
+
+    <div class="section-heading player-stats-section-heading">
+      <span class="eyebrow">All time</span>
+      <h3>TSP</h3>
+    </div>
+    <div id="playerStatsTsp"></div>
+
+    <div class="section-heading player-stats-section-heading">
+      <span class="eyebrow">All time</span>
+      <h3>Historiek per seizoen</h3>
+    </div>
+    <div id="playerStatsHistory"></div>
+
+    <div class="section-heading player-stats-section-heading">
+      <span class="eyebrow">All time</span>
+      <h3>TSP-wijzigingen</h3>
+    </div>
+    <div id="playerStatsTspChanges"></div>
   `;
 
   renderPlayerStatsRecords(
@@ -3595,12 +4028,193 @@ function renderPlayerStats(container, data, historyData, profilePlayer = current
     document.getElementById('playerStatsTspChanges'),
     historyData?.tspWijzigingen || []
   );
+}
 
-  const matchesContainer =
-    document.getElementById('playerStatsMatches');
 
-  if (!matches.length) {
-    matchesContainer.innerHTML = `
+function renderPlayerStatsChart(container, matches) {
+  if (!container) {
+    return;
+  }
+
+  const points = (Array.isArray(matches) ? matches : [])
+    .map(match => {
+      const moyenne = Number(
+        String(match.moyenne ?? '').replace(',', '.')
+      );
+
+      return {
+        match,
+        moyenne
+      };
+    })
+    .filter(item => Number.isFinite(item.moyenne))
+    .sort((a, b) => {
+      const dateA = new Date(`${a.match.datum}T12:00:00`);
+      const dateB = new Date(`${b.match.datum}T12:00:00`);
+      return dateA - dateB;
+    });
+
+  if (!points.length) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <strong>Nog geen moyennegegevens beschikbaar</strong>
+      </div>
+    `;
+    return;
+  }
+
+  const width = 320;
+  const height = 185;
+  const left = 36;
+  const right = 12;
+  const top = 18;
+  const bottom = 38;
+  const plotWidth = width - left - right;
+  const plotHeight = height - top - bottom;
+
+  const values = points.map(item => item.moyenne);
+  let minValue = Math.min(...values);
+  let maxValue = Math.max(...values);
+
+  const margin =
+    Math.max(
+      (maxValue - minValue) * 0.25,
+      0.05
+    );
+
+  minValue = Math.max(0, minValue - margin);
+  maxValue += margin;
+
+  if (maxValue === minValue) {
+    maxValue = minValue + 0.1;
+  }
+
+  const xForIndex = index =>
+    points.length === 1
+      ? left + plotWidth / 2
+      : left + (index / (points.length - 1)) * plotWidth;
+
+  const yForValue = value =>
+    top +
+    ((maxValue - value) / (maxValue - minValue)) *
+      plotHeight;
+
+  const polyline =
+    points
+      .map(
+        (item, index) =>
+          `${xForIndex(index).toFixed(1)},${yForValue(item.moyenne).toFixed(1)}`
+      )
+      .join(' ');
+
+  const yTicks = [0, 0.5, 1].map(fraction => {
+    const value =
+      maxValue - fraction * (maxValue - minValue);
+    const y = top + fraction * plotHeight;
+
+    return `
+      <line
+        x1="${left}"
+        y1="${y.toFixed(1)}"
+        x2="${width - right}"
+        y2="${y.toFixed(1)}"
+        class="player-stats-chart-grid"
+      />
+      <text
+        x="${left - 6}"
+        y="${(y + 3).toFixed(1)}"
+        text-anchor="end"
+        class="player-stats-chart-axis"
+      >
+        ${value.toFixed(2).replace('.', ',')}
+      </text>
+    `;
+  }).join('');
+
+  const pointMarkup =
+    points.map((item, index) => {
+      const x = xForIndex(index);
+      const y = yForValue(item.moyenne);
+      const dateLabel = formatShortChartDate(item.match.datum);
+
+      return `
+        <circle
+          cx="${x.toFixed(1)}"
+          cy="${y.toFixed(1)}"
+          r="4"
+          class="player-stats-chart-point"
+        />
+        <text
+          x="${x.toFixed(1)}"
+          y="${Math.max(11, y - 8).toFixed(1)}"
+          text-anchor="middle"
+          class="player-stats-chart-value"
+        >
+          ${item.moyenne.toFixed(3).replace('.', ',')}
+        </text>
+        <text
+          x="${x.toFixed(1)}"
+          y="${height - 12}"
+          text-anchor="middle"
+          class="player-stats-chart-date"
+        >
+          ${esc(dateLabel)}
+        </text>
+      `;
+    }).join('');
+
+  container.innerHTML = `
+    <article class="dashboard-card player-stats-chart-card">
+      <svg
+        class="player-stats-chart"
+        viewBox="0 0 ${width} ${height}"
+        role="img"
+        aria-label="Moyenne per gespeelde wedstrijd"
+      >
+        ${yTicks}
+
+        <polyline
+          points="${polyline}"
+          class="player-stats-chart-line"
+        />
+
+        ${pointMarkup}
+      </svg>
+    </article>
+  `;
+}
+
+
+function formatShortChartDate(value) {
+  if (!value) {
+    return '';
+  }
+
+  const date = new Date(`${value}T12:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return date.toLocaleDateString(
+    'nl-BE',
+    {
+      day: '2-digit',
+      month: '2-digit'
+    }
+  );
+}
+
+
+function renderPlayerStatsMatches(container, matches) {
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = '';
+
+  if (!Array.isArray(matches) || !matches.length) {
+    container.innerHTML = `
       <div class="empty-state">
         <strong>Nog geen gespeelde partijen gevonden</strong>
       </div>
@@ -3610,7 +4224,7 @@ function renderPlayerStats(container, data, historyData, profilePlayer = current
 
   matches.forEach(match => {
     const card = document.createElement('article');
-    card.className = 'dashboard-card player-stats-match';
+    card.className = 'player-stats-table-match';
 
     const result =
       Number(match.bonus) === 1
@@ -3619,56 +4233,76 @@ function renderPlayerStats(container, data, historyData, profilePlayer = current
           ? 'Gelijk'
           : 'Verlies';
 
+    const resultClass =
+      result === 'Winst'
+        ? 'win'
+        : result === 'Gelijk'
+          ? 'draw'
+          : 'loss';
+
+    const opponentTeam =
+      match.thuis
+        ? match.uitploeg
+        : match.thuisploeg;
+
     card.innerHTML = `
-      <div class="card-heading">
-        <div>
-          <span class="card-label">
-            ${formatDate(match.datum)} · Speelweek ${esc(match.speelweek)}
-          </span>
-          <h3>${esc(match.tegenstander || 'Tegenstander onbekend')}</h3>
-        </div>
-        <strong>${result}</strong>
+      <div class="player-stats-table-meta">
+        <span>
+          ${formatDate(match.datum)}
+          · Speelweek ${esc(match.speelweek)}
+        </span>
+
+        <strong class="player-stats-result ${resultClass}">
+          ${result}
+        </strong>
       </div>
 
-      <p class="muted">
-        ${match.thuis ? 'Thuis' : 'Uit'}
-        · ${esc(match.thuisploeg)}
-        tegen
-        ${esc(match.uitploeg)}
-      </p>
+      <div class="player-stats-opponent-block">
+        <strong class="player-stats-opponent-team">
+          ${esc(opponentTeam || 'Ploeg onbekend')}
+        </strong>
 
-      <div class="player-stats-summary">
+        <span class="player-stats-opponent-name">
+          ${esc(match.tegenstander || 'Tegenstander onbekend')}
+        </span>
+      </div>
+
+      <div class="player-stats-wide-stats">
         <div>
-          <span>TSP</span>
-          <strong>${esc(match.tspWedstrijd)}</strong>
+          <small>TSP</small>
+          <strong>${esc(match.tspWedstrijd ?? '–')}</strong>
         </div>
+
         <div>
-          <span>PTN</span>
-          <strong>${formatStandNumber(match.ptn)}</strong>
+          <small>GSP</small>
+          <strong>${esc(match.gsp ?? '–')}</strong>
         </div>
+
         <div>
-          <span>GSP</span>
-          <strong>${esc(match.gsp)}</strong>
-        </div>
-        <div>
-          <span>BRT</span>
+          <small>BRT</small>
           <strong>${esc(match.brt || '–')}</strong>
         </div>
+
         <div>
-          <span>MOY</span>
+          <small>MOY</small>
           <strong>${formatMoyenne(match.moyenne)}</strong>
         </div>
+
         <div>
-          <span>HR</span>
-          <strong>${esc(match.hr)}</strong>
+          <small>HR</small>
+          <strong>${esc(match.hr ?? '–')}</strong>
+        </div>
+
+        <div class="player-stats-wide-ptn">
+          <small>PTN</small>
+          <strong>${formatStandNumber(match.ptn)}</strong>
         </div>
       </div>
     `;
 
-    matchesContainer.appendChild(card);
+    container.appendChild(card);
   });
 }
-
 
 function renderPlayerStatsRecords(container, records) {
   if (!container) {

@@ -1,260 +1,553 @@
 <!DOCTYPE html>
+
 <html lang="nl">
+
  <head>
+
   <meta charset="utf-8"/>
+
   <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+
   <meta content="#08783f" name="theme-color"/>
+
   <title>ADL2000</title>
+
   <link href="manifest.json" rel="manifest"/>
+
   <link href="style.css" rel="stylesheet"/>
+
  </head>
+
  <body>
+
   <div class="app">
+
    <header class="app-header">
+
     <div class="header-inner">
+
      <img alt="ADL2000" class="header-logo" src="adllogo.png"/>
+
      <p id="headerSubtitle">Competitieoverzicht</p>
+
     </div>
+
    </header>
+
    <main class="app-content">
+
     <section class="screen" id="welcomeScreen">
+
      <div class="welcome-card">
+
       <img alt="ADL2000" class="welcome-logo" src="adllogo.png"/>
+
       <span class="eyebrow">Welkom</span>
+
       <h2>Jouw competitie in één overzicht</h2>
+
       <p>Kies één keer je speler. Daarna opent ADL2000 automatisch jouw persoonlijke dashboard.</p>
+
       <button class="primary-button" id="startButton">Kies speler</button>
+
      </div>
+
     </section>
 
     <section class="screen" hidden="" id="playerSelectScreen">
+
      <button class="text-button" id="backButton">← Terug</button>
+
      <div class="section-heading">
+
       <span class="eyebrow">Mijn ADL2000</span>
+
       <h2>Kies je speler</h2>
+
       <p class="muted">Typ minstens twee letters van je naam.</p>
+
      </div>
+
      <input autocomplete="off" class="search-input" id="playerSearch" placeholder="Zoek op naam..." type="search"/>
+
      <div class="status-text" id="playerSearchStatus"></div>
+
      <div class="player-results" id="playerResults"></div>
+
     </section>
 
     <section class="screen" hidden="" id="homeScreen">
+
      <div class="home-greeting">
+
       <p class="eyebrow">Mijn ADL2000</p>
+
       <h2 id="homeGreeting">Welkom</h2>
+
      </div>
+
      <article class="dashboard-card player-card">
+
       <div class="player-card-main">
+
        <div class="player-avatar">♙</div>
+
        <div>
+
         <span class="card-label">Speler</span>
+
         <h3 id="homePlayerName">—</h3>
+
         <p id="homeTeam">—</p>
+
        </div>
+
       </div>
+
       <div class="tsp-badge">
+
        <span>TSP</span>
+
        <strong id="homeTsp">—</strong>
+
       </div>
+
      </article>
+
      <article class="dashboard-card">
+
       <div class="card-heading">
+
        <div>
+
         <span class="card-label">Stand</span>
+
         <h3 id="homeDivision">Jouw reeks</h3>
+
        </div>
+
        <button class="link-button" data-nav="stand">Volledig →</button>
+
       </div>
+
       <div class="loading-box" id="standSnippet">Stand laden...</div>
+
      </article>
+
      <article class="dashboard-card match-section">
+
       <div class="match-title">
+
        <span class="match-icon">✓</span>
+
        <span class="card-label">Vorige wedstrijd</span>
+
       </div>
+
       <div class="match-card" id="previousMatch">
+
        <span class="muted">Wedstrijd laden...</span>
+
       </div>
+
      </article>
+
      <article class="dashboard-card match-section">
+
       <div class="match-title">
+
        <span class="match-icon">›</span>
+
        <span class="card-label">Volgende wedstrijd</span>
+
       </div>
+
       <div class="match-card" id="nextMatch">
+
        <span class="muted">Wedstrijd laden...</span>
+
       </div>
+
      </article>
+
     </section>
 
     <section class="screen" hidden="" id="standScreen">
+
      <div class="section-heading">
+
       <span class="eyebrow">Competitie</span>
+
       <h2>Stand</h2>
+
       <p class="muted" id="standDescription">Jouw reeks</p>
+
      </div>
+
      <div id="fullStand"></div>
+
     </section>
 
     <section class="screen" hidden="" id="calendarScreen">
+
      <div class="section-heading">
+
       <span class="eyebrow">Competitie</span>
+
       <h2>Kalender &amp; uitslagen</h2>
+
       <p class="muted" id="calendarDescription">Jouw reeks</p>
+
      </div>
+
      <div class="segmented">
+
       <button class="segment active" data-calendar-mode="team" type="button">Mijn ploeg</button>
+
       <button class="segment" data-calendar-mode="all" type="button">Alle wedstrijden</button>
+
      </div>
+
      <div id="calendarContent"></div>
+
     </section>
 
+<section class="screen" hidden="" id="matchdayScreen">
+
+ <div class="section-heading">
+
+  <span class="eyebrow">Competitie</span>
+
+  <h2>Speeldag</h2>
+
+  <p class="muted" id="matchdayDescription">
+
+   Laatste gespeelde speeldag
+
+  </p>
+
+ </div>
+
+ <div class="matchday-week-nav">
+
+  <button
+
+   class="matchday-week-button"
+
+   id="matchdayPreviousWeek"
+
+   type="button"
+
+   aria-label="Vorige speelweek"
+
+  >
+
+   ‹
+
+  </button>
+
+  <div class="matchday-week-title" id="matchdayWeekTitle">
+
+   Speelweek laden...
+
+  </div>
+
+  <button
+
+   class="matchday-week-button"
+
+   id="matchdayNextWeek"
+
+   type="button"
+
+   aria-label="Volgende speelweek"
+
+  >
+
+   ›
+
+  </button>
+
+ </div>
+
+ <div id="matchdayContent">
+
+  <div class="loading-box">
+
+   Speeldag laden...
+
+  </div>
+
+ </div>
+
+</section>
+
     <section class="screen" hidden="" id="seriesScreen">
+
      <div class="section-heading">
+
       <span class="eyebrow">Competitie</span>
+
       <h2>Andere reeksen</h2>
+
       <p class="muted">Bekijk een andere afdeling zonder je ingestelde speler te wijzigen.</p>
+
      </div>
+
      <div class="series-grid" id="seriesGrid"></div>
+
     </section>
 
     <section class="screen" hidden="" id="moreScreen">
+
      <div class="section-heading">
+
       <span class="eyebrow">Meer</span>
+
       <h2>Overige</h2>
+
      </div>
+
      <div class="menu-list">
+
       <button class="menu-row" id="searchOtherPlayer">
+
        <span class="menu-row-text">
+
         <strong>Speler zoeken</strong>
+
         <small>Zoek een andere speler</small>
+
        </span>
+
        <span>›</span>
+
       </button>
 
       <button class="menu-row" id="playerStatsButton">
+
        <span class="menu-row-text">
+
         <strong>Persoonlijke statistieken</strong>
+
         <small>Bekijk je prestaties van het huidige seizoen</small>
+
        </span>
+
        <span>›</span>
+
       </button>
 
       <button class="menu-row" id="recordsButton">
+
        <span class="menu-row-text">
+
         <strong>Records</strong>
+
         <small>Bekijk de records van ADL2000</small>
+
        </span>
+
        <span>›</span>
+
       </button>
 
       <button class="menu-row" id="venuesButton">
+
        <span class="menu-row-text">
+
         <strong>Lokalen &amp; adressen</strong>
+
         <small>Overzicht van de speellokalen</small>
+
        </span>
+
        <span>›</span>
+
       </button>
 
       <button class="menu-row danger-row" id="changePlayer">
+
        <span class="menu-row-text">
+
         <strong>Andere speler kiezen</strong>
+
         <small>Wijzig je persoonlijke dashboard</small>
+
        </span>
+
        <span>›</span>
+
       </button>
+
      </div>
+
     </section>
 
     <section class="screen" hidden="" id="recordsScreen">
+
      <button class="text-button" id="recordsBackButton" type="button">← Terug naar Overige</button>
+
      <div class="section-heading">
+
       <span class="eyebrow">ADL2000</span>
+
       <h2>Records</h2>
+
       <p class="muted">Bekijk de beste prestaties van het huidige seizoen.</p>
+
      </div>
+
      <div id="recordsContent"></div>
+
     </section>
 
     <section class="screen" hidden="" id="playerStatsScreen">
+
      <button class="text-button" id="playerStatsBackButton" type="button">← Terug naar Overige</button>
+
      <div class="section-heading">
+
       <span class="eyebrow">Mijn ADL2000</span>
+
       <h2>Persoonlijke statistieken</h2>
+
       <p class="muted">Jouw prestaties van het huidige seizoen.</p>
+
      </div>
+
      <div id="playerStatsContent"></div>
+
     </section>
 
 <section class="screen" hidden="" id="matchDetailScreen">
+
  <button class="text-button" id="matchDetailBackButton" type="button">← Terug</button>
 
  <div class="section-heading">
+
   <span class="eyebrow">Competitie</span>
+
   <h2>Wedstrijddetails</h2>
+
   <p class="muted" id="matchDetailDescription">Ontmoeting laden...</p>
+
  </div>
 
  <div id="matchDetailContent">
+
   <div class="loading-box">Wedstrijd laden...</div>
+
  </div>
+
 </section>
 
 <section class="screen" hidden="" id="teamDetailScreen">
+
  <button class="text-button" id="teamDetailBackButton" type="button">← Terug</button>
 
  <div class="section-heading">
+
   <span class="eyebrow">Competitie</span>
+
   <h2 id="teamDetailTitle">Ploeggegevens</h2>
+
   <p class="muted" id="teamDetailDescription">Ploeg laden...</p>
+
  </div>
 
  <div id="teamDetailContent">
+
   <div class="loading-box">Ploeggegevens laden...</div>
+
  </div>
+
 </section>
 
 <section class="screen" hidden="" id="venuesScreen">
+
  <button class="text-button" id="venuesBackButton" type="button">
+
   ← Terug naar Overige
+
  </button>
 
  <div class="section-heading">
+
   <span class="eyebrow">ADL2000</span>
+
   <h2>Lokalen &amp; adressen</h2>
+
   <p class="muted">
+
    Bekijk de speellokalen van alle ploegen.
+
   </p>
+
  </div>
 
  <div id="venuesContent">
+
   <div class="loading-box">
+
    Speellokalen laden...
+
   </div>
+
  </div>
+
 </section>
 
    </main>
 
-   <nav aria-label="Hoofdnavigatie" class="bottom-nav" hidden="" id="bottomNav">
-    <button class="nav-item active" data-nav="home">
-     <span class="nav-icon">⌂</span><span>Home</span>
-    </button>
-    <button class="nav-item" data-nav="stand">
-     <span class="nav-icon">♜</span><span>Stand</span>
-    </button>
-    <button class="nav-item" data-nav="calendar">
-     <span class="nav-icon">▣</span><span>Kalender</span>
-    </button>
-    <button class="nav-item" data-nav="series">
-     <span class="nav-icon">≋</span><span>Andere reeksen</span>
-    </button>
-    <button class="nav-item" data-nav="more">
-     <span class="nav-icon">•••</span><span>Overige</span>
-    </button>
-   </nav>
+   <nav aria-label="Hoofdnavigatie" class="bottom-nav" hidden id="bottomNav">
+  <button class="nav-item active" data-nav="home" type="button">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M9.5 20v-6h5v6"/></svg>
+    </span>
+    <span>Home</span>
+  </button>
+
+  <button class="nav-item" data-nav="stand" type="button">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M5 20V10h4v10"/><path d="M10 20V5h4v15"/><path d="M15 20v-7h4v7"/><path d="M3 20h18"/></svg>
+    </span>
+    <span>Stand</span>
+  </button>
+
+  <button class="nav-item" data-nav="calendar" type="button">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"/><path d="M7 3.5v4M17 3.5v4M3.5 9.5h17"/><path d="M7 13h3M14 13h3M7 17h3M14 17h3"/></svg>
+    </span>
+    <span>Kalender</span>
+  </button>
+
+  <button class="nav-item" data-nav="matchday" type="button">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h14"/><circle cx="3" cy="6" r=".7"/><circle cx="3" cy="12" r=".7"/><circle cx="3" cy="18" r=".7"/></svg>
+    </span>
+    <span>Speeldag</span>
+  </button>
+
+  <button class="nav-item" data-nav="series" type="button">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/><path d="M7 4v6M12 9v6M17 14v6"/></svg>
+    </span>
+    <span>Reeksen</span>
+  </button>
+
+  <button class="nav-item" data-nav="more" type="button">
+    <span class="nav-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+    </span>
+    <span>Overige</span>
+  </button>
+</nav>
+
   </div>
+
   <script src="app.js"></script>
+
  </body>
+
 </html>

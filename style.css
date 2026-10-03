@@ -1,188 +1,267 @@
 :root {
+
   --green: #08783f;
+
   --green-dark: #04532d;
+
   --green-deep: #033d22;
+
   --green-soft: #eaf7f0;
+
   --green-soft-2: #dff2e7;
 
 --bg: #e8efeb;
+
 --surface: #f4f8f5;
+
 --surface-soft: #eaf2ed;
 
   --text: #17231d;
+
   --muted: #66756d;
+
   --border: #dfe8e3;
 
   --danger: #c62828;
+
   --danger-soft: #fff0f0;
 
   --shadow:
+
     0 8px 24px rgba(17, 55, 37, .08);
 
   --shadow-strong:
-    0 14px 34px rgba(17, 55, 37, .13);
-}
 
+    0 14px 34px rgba(17, 55, 37, .13);
+
+}
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
+  box-sizing: border-box;
+
+  margin: 0;
+
+  padding: 0;
+
+}
 
 html {
+
   background: var(--bg);
+
 }
 
-
 body {
+
   font-family:
+
     Arial,
+
     Helvetica,
+
     sans-serif;
 
   background: var(--bg);
-  color: var(--text);
-}
 
+  color: var(--text);
+
+}
 
 button,
-input {
-  font: inherit;
-}
 
+input {
+
+  font: inherit;
+
+}
 
 button {
-  -webkit-tap-highlight-color: transparent;
-}
 
+  -webkit-tap-highlight-color: transparent;
+
+}
 
 [hidden] {
+
   display: none !important;
+
 }
 
-
 .app {
+
   width: 100%;
+
   max-width: 520px;
+
   min-height: 100vh;
+
   margin: 0 auto;
 
   background:
+
     linear-gradient(
+
       180deg,
+
       #f8fbf9 0,
+
       #eef4f1 100%
+
     );
 
   position: relative;
+
 }
 
-
 /* =========================================================
+
    HEADER
+
    ========================================================= */
 
 .app-header {
+
   min-height: 154px;
 
   padding:
+
     calc(22px + env(safe-area-inset-top))
+
     20px
+
     24px;
 
   color: #ffffff;
 
   background:
+
     radial-gradient(
+
       circle at 86% 20%,
+
       rgba(255, 255, 255, .16),
+
       transparent 25%
+
     ),
+
     linear-gradient(
+
       145deg,
+
       var(--green-deep),
+
       var(--green)
+
     );
 
   position: relative;
+
   overflow: hidden;
+
 }
 
-
 .app-header::after {
+
   content: "";
 
   position: absolute;
+
   width: 190px;
+
   height: 190px;
+
   right: -95px;
+
   bottom: -115px;
 
   border-radius: 50%;
-  border: 24px solid rgba(255, 255, 255, .05);
-}
 
+  border: 24px solid rgba(255, 255, 255, .05);
+
+}
 
 .header-inner {
+
   position: relative;
+
   z-index: 1;
+
 }
 
-
 .header-logo {
+
   display: block;
 
   width: 210px;
+
   max-width: 60%;
+
   height: auto;
 
   margin: 0 auto;
 
   filter:
+
     drop-shadow(
+
       0 5px 9px rgba(0, 0, 0, .22)
+
     );
+
 }
 
-
 .app-header p {
+
   margin-top: 10px;
 
   font-size: 13px;
+
   font-weight: 700;
 
   opacity: .86;
+
 }
 
-
 /* =========================================================
+
    CONTENT
+
    ========================================================= */
 
 .app-content {
-  padding:
-    20px
-    16px
-    calc(105px + env(safe-area-inset-bottom));
-}
 
+  padding:
+
+    20px
+
+    16px
+
+    calc(105px + env(safe-area-inset-bottom));
+
+}
 
 .screen h2 {
-  font-size: 26px;
-  line-height: 1.15;
-  letter-spacing: -.45px;
-}
 
+  font-size: 26px;
+
+  line-height: 1.15;
+
+  letter-spacing: -.45px;
+
+}
 
 .muted {
+
   color: var(--muted);
+
   line-height: 1.5;
+
 }
 
-
 .eyebrow {
+
   display: block;
 
   margin-bottom: 6px;
@@ -190,18 +269,23 @@ button {
   color: var(--green);
 
   font-size: 11px;
+
   font-weight: 800;
 
   letter-spacing: .09em;
+
   text-transform: uppercase;
+
 }
 
-
 /* =========================================================
+
    WELKOM
+
    ========================================================= */
 
 .welcome-card {
+
   margin-top: -58px;
 
   padding: 26px 22px;
@@ -209,7 +293,9 @@ button {
   background: var(--surface);
 
   border:
+
     1px solid
+
     rgba(255, 255, 255, .75);
 
   border-radius: 22px;
@@ -217,49 +303,63 @@ button {
   box-shadow: var(--shadow-strong);
 
   position: relative;
+
   z-index: 2;
+
 }
 
-
 .welcome-logo {
+
   display: block;
 
   width: 190px;
+
   max-width: 70%;
 
   margin:
-    0 auto
-    22px;
-}
 
+    0 auto
+
+    22px;
+
+}
 
 .welcome-card h2 {
+
   margin-bottom: 10px;
+
 }
 
-
 .welcome-card p {
+
   margin-bottom: 22px;
 
   color: var(--muted);
 
   line-height: 1.55;
+
 }
 
-
 .primary-button {
+
   width: 100%;
 
   padding: 15px 16px;
 
   border: 0;
+
   border-radius: 14px;
 
   background:
+
     linear-gradient(
+
       135deg,
+
       var(--green),
+
       #0a9650
+
     );
 
   color: #ffffff;
@@ -269,18 +369,25 @@ button {
   cursor: pointer;
 
   box-shadow:
+
     0 7px 16px
+
     rgba(8, 120, 63, .22);
+
 }
 
-
 /* =========================================================
+
    KNOPPEN / ZOEKEN
+
    ========================================================= */
 
 .text-button,
+
 .link-button {
+
   border: 0;
+
   background: transparent;
 
   color: var(--green);
@@ -288,26 +395,31 @@ button {
   font-weight: 800;
 
   cursor: pointer;
-}
 
+}
 
 .text-button {
-  margin-bottom: 20px;
-}
 
+  margin-bottom: 20px;
+
+}
 
 .link-button {
+
   font-size: 13px;
+
 }
 
-
 .search-input {
+
   width: 100%;
 
   margin-top: 4px;
+
   padding: 15px 16px;
 
   border: 1px solid #cbd9d1;
+
   border-radius: 14px;
 
   outline: 0;
@@ -317,46 +429,59 @@ button {
   font-size: 16px;
 
   box-shadow:
+
     0 4px 14px
+
     rgba(17, 55, 37, .04);
+
 }
 
-
 .search-input:focus {
+
   border-color: var(--green);
 
   box-shadow:
+
     0 0 0 3px
+
     rgba(8, 120, 63, .10);
+
 }
 
-
 .status-text {
+
   min-height: 20px;
 
   margin:
+
     14px
+
     2px
+
     8px;
 
   color: var(--muted);
 
   font-size: 13px;
-}
 
+}
 
 .player-results {
+
   display: grid;
+
   gap: 9px;
+
 }
 
-
 .player-result {
+
   width: 100%;
 
   padding: 15px;
 
   border: 1px solid var(--border);
+
   border-radius: 15px;
 
   background: var(--surface);
@@ -366,26 +491,31 @@ button {
   cursor: pointer;
 
   box-shadow:
-    0 4px 14px
-    rgba(17, 55, 37, .04);
-}
 
+    0 4px 14px
+
+    rgba(17, 55, 37, .04);
+
+}
 
 .player-result:active {
+
   transform: scale(.99);
+
 }
 
-
 .player-result-name {
+
   display: block;
 
   color: var(--text);
 
   font-weight: 800;
+
 }
 
-
 .player-result-info {
+
   display: block;
 
   margin-top: 5px;
@@ -393,50 +523,63 @@ button {
   color: var(--muted);
 
   font-size: 13px;
+
 }
 
-
 /* =========================================================
+
    HOME
+
    ========================================================= */
 
 .home-greeting {
-  margin:
-    -2px
-    2px
-    17px;
-}
 
+  margin:
+
+    -2px
+
+    2px
+
+    17px;
+
+}
 
 .home-greeting h2 {
+
   font-size: 29px;
+
 }
 
-
 .dashboard-card {
+
   margin-bottom: 13px;
+
   padding: 18px;
 
   background: var(--surface);
 
   border: 1px solid var(--border);
+
   border-radius: 19px;
 
   box-shadow: var(--shadow);
+
 }
 
-
 .player-card {
+
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   gap: 14px;
+
 }
 
-
 .player-card-main {
+
   display: flex;
 
   align-items: center;
@@ -444,14 +587,17 @@ button {
   min-width: 0;
 
   gap: 12px;
+
 }
 
-
 .player-avatar {
+
   display: grid;
 
   width: 48px;
+
   min-width: 48px;
+
   height: 48px;
 
   place-items: center;
@@ -459,48 +605,63 @@ button {
   border-radius: 15px;
 
   background:
+
     linear-gradient(
+
       145deg,
+
       var(--green-dark),
+
       var(--green)
+
     );
 
   color: #ffffff;
 
   font-size: 27px;
+
   font-weight: 800;
+
 }
 
-
 .player-card h3 {
+
   margin:
+
     4px
+
     0
+
     5px;
 
   font-size: 19px;
+
 }
 
-
 .player-card p {
+
   color: var(--muted);
 
   font-size: 13px;
+
 }
 
-
 .card-label {
+
   color: var(--muted);
 
   font-size: 10px;
+
   font-weight: 800;
 
   letter-spacing: .08em;
+
   text-transform: uppercase;
+
 }
 
-
 .tsp-badge {
+
   min-width: 66px;
 
   padding: 10px 12px;
@@ -512,65 +673,77 @@ button {
   text-align: center;
 
   color: var(--green-dark);
+
 }
 
-
 .tsp-badge span {
+
   display: block;
 
   font-size: 9px;
+
   font-weight: 800;
+
 }
 
-
 .tsp-badge strong {
+
   display: block;
 
   margin-top: 2px;
 
   font-size: 23px;
+
 }
 
-
 .card-heading {
+
   display: flex;
 
   justify-content: space-between;
+
   align-items: center;
 
   gap: 12px;
-}
 
+}
 
 .card-heading h3 {
+
   margin-top: 4px;
+
 }
 
-
 .loading-box {
+
   margin-top: 14px;
+
   padding: 15px;
 
   border: 1px solid var(--border);
+
   border-radius: 14px;
 
   background: var(--surface-soft);
+
 }
 
-
 .match-title {
+
   display: flex;
 
   align-items: center;
 
   gap: 8px;
+
 }
 
-
 .match-icon {
+
   display: grid;
 
   width: 25px;
+
   height: 25px;
 
   place-items: center;
@@ -582,61 +755,79 @@ button {
   color: var(--green);
 
   font-size: 16px;
+
   font-weight: 900;
+
 }
 
-
 .match-card {
+
   margin-top: 12px;
+
   padding: 14px;
 
   border: 1px solid var(--border);
+
   border-radius: 14px;
 
   background:
+
     linear-gradient(
+
       180deg,
+
       #fbfdfc,
+
       #f4f9f6
+
     );
+
 }
 
-
 .match-date {
+
   margin-bottom: 11px;
 
   color: var(--muted);
 
   font-size: 12px;
-  font-weight: 700;
-}
 
+  font-weight: 700;
+
+}
 
 .match-teams {
-  display: grid;
-  gap: 5px;
-}
 
+  display: grid;
+
+  gap: 5px;
+
+}
 
 .match-teams strong {
+
   font-size: 14px;
+
 }
 
-
 .match-teams span {
+
   color: var(--muted);
 
   font-size: 10px;
+
   font-weight: 700;
 
   text-transform: uppercase;
+
 }
 
-
 .match-score {
+
   display: inline-block;
 
   margin-top: 12px;
+
   padding: 7px 10px;
 
   border-radius: 10px;
@@ -646,46 +837,57 @@ button {
   color: var(--green-dark);
 
   font-size: 21px;
-  font-weight: 900;
-}
 
+  font-weight: 900;
+
+}
 
 .match-score span {
+
   color: var(--muted);
+
 }
 
-
 .match-meta {
+
   margin-top: 10px;
 
   color: var(--muted);
 
   font-size: 12px;
+
 }
 
-
 /* =========================================================
+
    SECTIE TITELS
+
    ========================================================= */
 
 .section-heading {
-  margin-bottom: 18px;
-}
 
+  margin-bottom: 18px;
+
+}
 
 .section-heading h2 {
+
   margin-bottom: 5px;
+
 }
 
-
 /* =========================================================
+
    LEGE STATUS
+
    ========================================================= */
 
 .empty-state {
+
   padding: 24px 18px;
 
   border: 1px solid var(--border);
+
   border-radius: 18px;
 
   background: var(--surface);
@@ -693,10 +895,11 @@ button {
   text-align: center;
 
   box-shadow: var(--shadow);
+
 }
 
-
 .empty-state p {
+
   margin-top: 7px;
 
   color: var(--muted);
@@ -704,32 +907,41 @@ button {
   line-height: 1.5;
 
   font-size: 14px;
+
 }
 
-
 /* =========================================================
+
    STAND
+
    ========================================================= */
 
 .stand-table {
+
   overflow: hidden;
 
   background: var(--surface);
 
   border: 1px solid var(--border);
+
   border-radius: 18px;
 
   box-shadow: var(--shadow);
+
 }
 
-
 .stand-row {
+
   display: grid;
 
   grid-template-columns:
+
     32px
+
     minmax(0, 1fr)
+
     42px
+
     62px;
 
   align-items: center;
@@ -741,19 +953,23 @@ button {
   padding: 8px 12px;
 
   border-bottom:
+
     1px solid
+
     var(--border);
 
   font-size: 13px;
-}
 
+}
 
 .stand-row:last-child {
+
   border-bottom: 0;
+
 }
 
-
 .stand-header {
+
   min-height: 40px;
 
   background: #f5f8f6;
@@ -761,76 +977,97 @@ button {
   color: var(--muted);
 
   font-size: 10px;
+
   font-weight: 800;
 
   text-transform: uppercase;
+
 }
 
-
 .stand-position {
+
   color: var(--muted);
 
   font-weight: 800;
+
 }
 
-
 .stand-team {
+
   min-width: 0;
 
   font-weight: 700;
-}
 
+}
 
 .stand-gsp,
+
 .stand-points {
+
   text-align: right;
-}
 
+}
 
 .stand-points {
-  font-weight: 900;
-}
 
+  font-weight: 900;
+
+}
 
 .stand-row.my-team {
+
   background:
+
     linear-gradient(
+
       90deg,
+
       #dcf4e6,
+
       #effaf4
+
     );
 
   color: var(--green-dark);
-}
 
+}
 
 .stand-row.my-team .stand-position {
+
   color: var(--green);
+
 }
 
-
 /* =========================================================
+
    HOME MINI-STAND
+
    ========================================================= */
 
 .home-stand {
+
   margin-top: 14px;
 
   overflow: hidden;
 
   border: 1px solid var(--border);
+
   border-radius: 14px;
 
   background: var(--surface);
+
 }
 
-
 .home-stand-row {
+
   display: grid;
 
   grid-template-columns:
+
     28px
+
     minmax(0, 1fr)
+
     58px;
 
   align-items: center;
@@ -842,80 +1079,101 @@ button {
   padding: 7px 11px;
 
   border-bottom:
+
     1px solid
+
     var(--border);
 
   font-size: 12px;
-}
 
+}
 
 .home-stand-row:last-child {
+
   border-bottom: 0;
+
 }
 
-
 .home-stand-position {
+
   color: var(--muted);
 
   font-weight: 800;
+
 }
 
-
 .home-stand-team {
+
   min-width: 0;
 
   font-weight: 700;
-}
 
+}
 
 .home-stand-points {
+
   text-align: right;
+
 }
 
-
 .home-stand-row.my-team {
+
   background:
+
     linear-gradient(
+
       90deg,
+
       #dff5e8,
+
       #f0faf4
+
     );
 
   color: var(--green-dark);
-}
 
+}
 
 .home-stand-row.my-team .home-stand-position {
+
   color: var(--green);
+
 }
 
-
 /* =========================================================
+
    KALENDER
+
    ========================================================= */
 
 .segmented {
+
   display: grid;
 
   grid-template-columns:
+
     1fr
+
     1fr;
 
   gap: 4px;
 
   margin-bottom: 16px;
+
   padding: 4px;
 
   border-radius: 14px;
 
   background: #e2ebe6;
+
 }
 
-
 .segment {
+
   padding: 11px 8px;
 
   border: 0;
+
   border-radius: 11px;
 
   background: transparent;
@@ -923,67 +1181,87 @@ button {
   color: var(--muted);
 
   font-size: 13px;
+
   font-weight: 800;
 
   cursor: pointer;
+
 }
 
-
 .segment.active {
+
   background: var(--green);
 
   color: #ffffff;
 
   box-shadow:
+
     0 4px 10px
+
     rgba(8, 120, 63, .20);
+
 }
 
-
 .week-heading {
+
   margin:
+
     20px
+
     2px
+
     8px;
 
   color: var(--green-dark);
 
   font-size: 13px;
+
   font-weight: 900;
+
 }
 
-
 .calendar-match {
+
   margin-bottom: 9px;
+
   padding: 14px;
 
   background: var(--surface);
 
   border: 1px solid var(--border);
+
   border-radius: 15px;
 
   box-shadow:
+
     0 4px 14px
+
     rgba(17, 55, 37, .045);
+
 }
 
-
 .calendar-date {
+
   margin-bottom: 10px;
 
   color: var(--muted);
 
   font-size: 11px;
+
   font-weight: 700;
+
 }
 
-
 .calendar-teams {
+
   display: grid;
 
   grid-template-columns:
+
     minmax(0, 1fr)
+
     auto
+
     minmax(0, 1fr);
 
   align-items: center;
@@ -991,15 +1269,17 @@ button {
   gap: 8px;
 
   font-size: 12px;
-}
 
+}
 
 .calendar-teams span:last-child {
+
   text-align: right;
+
 }
 
-
 .calendar-teams strong {
+
   padding: 5px 7px;
 
   border-radius: 8px;
@@ -1009,52 +1289,67 @@ button {
   color: var(--green-dark);
 
   white-space: nowrap;
+
 }
 
-
 .calendar-meta {
+
   margin-top: 10px;
 
   color: var(--muted);
 
   font-size: 12px;
+
 }
 
-
 .calendar-match.my-match {
+
   border-color: #b9dfca;
 
   background:
+
     linear-gradient(
+
       135deg,
+
       #f4fbf7,
+
       #eaf7f0
+
     );
+
 }
 
-
 /* =========================================================
+
    ANDERE REEKSEN
+
    Rustige, subtiele kleuren
+
    ========================================================= */
 
 .series-grid {
+
   display: grid;
 
   grid-template-columns:
+
     1fr
+
     1fr;
 
   gap: 11px;
+
 }
 
-
 .series-button {
+
   min-height: 105px;
 
   padding: 17px;
 
   border: 1px solid var(--border);
+
   border-radius: 17px;
 
   text-align: left;
@@ -1062,22 +1357,27 @@ button {
   cursor: pointer;
 
   box-shadow:
+
     0 5px 16px
+
     rgba(17, 55, 37, .05);
+
 }
 
-
 .series-button strong {
+
   display: block;
 
   font-size: 27px;
+
   line-height: 1;
 
   color: var(--green-dark);
+
 }
 
-
 .series-button span {
+
   display: block;
 
   margin-top: 8px;
@@ -1085,56 +1385,69 @@ button {
   color: #52655b;
 
   font-size: 12px;
-  font-weight: 700;
-}
 
+  font-weight: 700;
+
+}
 
 .series-a {
-  background: #edf7f1;
-}
 
+  background: #edf7f1;
+
+}
 
 .series-b {
-  background: #eef5f4;
-}
 
+  background: #eef5f4;
+
+}
 
 .series-c {
-  background: #f4f5ed;
-}
 
+  background: #f4f5ed;
+
+}
 
 .series-d {
-  background: #f6f2e9;
-}
 
+  background: #f6f2e9;
+
+}
 
 .series-e {
+
   background: #f2eef5;
+
 }
 
-
 /* =========================================================
+
    OVERIGE
+
    ========================================================= */
 
 .menu-list {
+
   display: grid;
+
   gap: 10px;
+
 }
 
-
 .menu-row {
+
   display: flex;
 
   width: 100%;
 
   justify-content: space-between;
+
   align-items: center;
 
   padding: 17px 16px;
 
   border: 1px solid var(--border);
+
   border-radius: 16px;
 
   background: var(--surface);
@@ -1146,59 +1459,73 @@ button {
   cursor: pointer;
 
   box-shadow:
+
     0 5px 16px
+
     rgba(17, 55, 37, .045);
+
 }
 
-
 .menu-row > span:last-child {
+
   color: #91a199;
 
   font-size: 24px;
-}
 
+}
 
 .menu-row-text {
-  display: grid;
-  gap: 4px;
-}
 
+  display: grid;
+
+  gap: 4px;
+
+}
 
 .menu-row-text strong {
+
   font-size: 14px;
+
 }
 
-
 .menu-row-text small {
+
   color: var(--muted);
 
   font-size: 12px;
+
   font-weight: 400;
+
 }
 
-
 .danger-row {
+
   border-color: #f2d7d7;
 
   background: var(--danger-soft);
 
   color: var(--danger);
-}
 
+}
 
 .danger-row .menu-row-text small {
+
   color: #a95c5c;
+
 }
 
-
 /* =========================================================
+
    ONDERSTE NAVIGATIE
+
    ========================================================= */
 
 .bottom-nav {
+
   position: fixed;
 
   left: 50%;
+
   bottom: 0;
 
   transform: translateX(-50%);
@@ -1206,34 +1533,45 @@ button {
   display: grid;
 
   grid-template-columns:
+
     repeat(5, 1fr);
 
   width: min(100%, 520px);
 
   padding:
+
     7px
+
     5px
+
     calc(7px + env(safe-area-inset-bottom));
 
   border-top:
+
     1px solid
+
     var(--border);
 
   background:
+
     rgba(255, 255, 255, .97);
 
   backdrop-filter:
+
     blur(14px);
 
   box-shadow:
+
     0 -8px 24px
+
     rgba(17, 55, 37, .06);
 
   z-index: 20;
+
 }
 
-
 .nav-item {
+
   min-width: 0;
 
   padding: 5px 2px;
@@ -1245,13 +1583,15 @@ button {
   color: #74847c;
 
   font-size: 9px;
+
   font-weight: 700;
 
   cursor: pointer;
+
 }
 
-
 .nav-icon {
+
   display: block;
 
   height: 23px;
@@ -1259,28 +1599,35 @@ button {
   margin-bottom: 3px;
 
   font-size: 19px;
+
   line-height: 20px;
+
 }
 
-
 .nav-item.active {
+
   color: var(--green);
 
   font-weight: 900;
+
 }
 
-
 /* =========================================================
+
    DESKTOP
+
    ========================================================= */
 
 @media (min-width: 521px) {
 
   body {
+
     padding: 0;
+
   }
 
   .app {
+
     min-height: 100vh;
 
     border-radius: 0;
@@ -1288,1024 +1635,1709 @@ button {
     overflow: hidden;
 
     box-shadow:
+
       0 0 45px
+
       rgba(17, 55, 37, .14);
+
   }
 
   .bottom-nav {
+
     bottom: 0;
+
     border-radius: 0;
+
   }
+
 }
 
-
 /* =========================================================
+
    ADL2000 - GERICHTE VISUELE AFWERKING
+
    ========================================================= */
 
 .secondary-button {
+
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
+
   width: 100%;
+
   min-height: 48px;
+
   padding: 12px 16px;
+
   border: 1px solid #c9dcd2;
+
   border-radius: 13px;
+
   background: #f7faf8;
+
   color: var(--green-dark);
+
   font: inherit;
+
   font-size: 13px;
+
   font-weight: 800;
+
   cursor: pointer;
+
   box-shadow: 0 4px 12px rgba(17, 55, 37, .05);
+
 }
 
 /* 1. Home - vorige / volgende wedstrijd */
 
 .match-section {
+
   text-align: center;
+
 }
 
 .match-title {
+
   justify-content: center;
+
   margin-bottom: 13px;
+
 }
 
 .match-card {
+
   padding: 17px 16px;
+
   text-align: center;
+
 }
 
 .match-date,
+
 .match-meta {
+
   text-align: center;
+
 }
 
 .match-teams {
+
   align-items: center;
+
   text-align: center;
+
 }
 
 .match-score {
+
   margin: 13px auto 0;
+
 }
 
 .match-card[role="button"]::after {
+
   text-align: center;
+
 }
 
 /* 2 + 3. Stand - Ploegen / Individueel */
 
 #standModeControls {
+
   display: grid;
+
   grid-template-columns: 1fr 1fr;
+
   gap: 5px;
+
   margin: 0 0 18px;
+
   padding: 4px;
+
   border: 1px solid #d5e2db;
+
   border-radius: 15px;
+
   background: #e7efeb;
+
 }
 
 #standModeControls .primary-button,
+
 #standModeControls .secondary-button {
+
   width: 100%;
+
   min-height: 43px;
+
   margin: 0;
+
   padding: 10px 8px;
+
   border: 0;
+
   border-radius: 11px;
+
   box-shadow: none;
+
   font-size: 13px;
+
 }
 
 #standModeControls .primary-button {
+
   background: var(--green);
+
   color: #fff;
+
   box-shadow: 0 5px 13px rgba(8, 120, 63, .16);
+
 }
 
 #standModeControls .secondary-button {
+
   background: transparent;
+
   color: #617269;
+
 }
 
 .individual-stand-table {
+
   width: 100%;
+
   overflow-x: auto;
+
   border: 1px solid var(--border);
+
   border-radius: 16px;
+
   background: var(--surface);
+
   box-shadow: 0 7px 20px rgba(17, 55, 37, .06);
+
   -webkit-overflow-scrolling: touch;
+
 }
 
 .individual-stand-row {
+
   display: grid;
+
   grid-template-columns: 30px minmax(145px, 1.6fr) minmax(135px, 1.35fr) 42px 48px 42px 58px;
+
   align-items: center;
+
   gap: 7px;
+
   min-width: 680px;
+
   min-height: 50px;
+
   padding: 8px 11px;
+
   border-bottom: 1px solid var(--border);
+
   font-size: 11px;
+
 }
 
 .individual-stand-row:last-child {
+
   border-bottom: 0;
+
 }
 
 .individual-stand-header {
+
   min-height: 40px;
+
   background: #edf4f0;
+
   color: #607168;
+
   font-size: 9px;
+
   font-weight: 900;
+
   letter-spacing: .03em;
+
   text-transform: uppercase;
+
 }
 
 .individual-stand-row > span:nth-child(n+4) {
+
   text-align: center;
+
 }
 
 .individual-stand-row.my-team {
+
   background: linear-gradient(90deg, #daf2e4, #eef9f3);
+
   color: var(--green-dark);
+
 }
 
 /* 4. Kalenderfilters */
 
 #calendarContent > .series-actions {
+
   display: grid;
+
   grid-template-columns: repeat(3, 1fr);
+
   gap: 5px;
+
   margin: 0 0 22px;
+
   padding: 4px;
+
   border: 1px solid #d5e2db;
+
   border-radius: 15px;
+
   background: #e7efeb;
+
 }
 
 #calendarContent > .series-actions .primary-button,
+
 #calendarContent > .series-actions .secondary-button {
+
   width: 100%;
+
   min-height: 39px;
+
   margin: 0;
+
   padding: 8px 5px;
+
   border: 0;
+
   border-radius: 10px;
+
   box-shadow: none;
+
   font-size: 11px;
+
 }
 
 #calendarContent > .series-actions .primary-button {
+
   background: var(--green);
+
   color: #fff;
+
 }
 
 #calendarContent > .series-actions .secondary-button {
+
   background: transparent;
+
   color: #607168;
+
 }
 
 /* 5. Andere reeksen */
 
 .series-grid {
+
   gap: 12px;
+
 }
 
 .series-button {
+
   min-height: 105px;
+
   padding: 18px;
+
   border: 1px solid #d5e3db;
+
   border-radius: 17px;
+
   box-shadow: 0 6px 18px rgba(17, 55, 37, .06);
+
 }
 
 .series-button strong {
+
   font-size: 27px;
+
 }
 
 .series-button span {
+
   margin-top: 3px;
+
   font-size: 12px;
+
 }
 
 .series-detail {
+
   padding-top: 2px;
+
 }
 
 .series-back-button {
+
   margin-bottom: 20px;
+
 }
 
 .series-detail-heading {
+
   margin-bottom: 17px;
+
   padding: 17px;
+
   border: 1px solid #dbe7e0;
+
   border-radius: 16px;
+
   background: #f5f9f7;
+
 }
 
 .series-detail-heading h3 {
+
   margin: 3px 0 4px;
+
   font-size: 24px;
+
 }
 
 .series-detail .series-actions {
+
   display: grid;
+
   grid-template-columns: 1fr 1fr;
+
   gap: 5px;
+
   margin-bottom: 20px;
+
   padding: 4px;
+
   border: 1px solid #d5e2db;
+
   border-radius: 15px;
+
   background: #e7efeb;
+
 }
 
 .series-detail .series-actions .primary-button,
+
 .series-detail .series-actions .secondary-button {
+
   width: 100%;
+
   min-height: 43px;
+
   margin: 0;
+
   border: 0;
+
   border-radius: 11px;
+
   box-shadow: none;
+
 }
 
 .series-detail .series-actions .secondary-button {
+
   background: transparent;
+
 }
 
 /* 6. Persoonlijke statistieken */
 
 #playerStatsContent > .dashboard-card:first-child {
+
   border-color: #cfe3d8;
+
   background: linear-gradient(145deg, #f9fcfa, #eef7f2);
+
 }
 
 .player-stats-summary {
+
   display: grid;
+
   grid-template-columns: repeat(2, minmax(0, 1fr));
+
   gap: 9px;
+
   margin-top: 15px;
+
 }
 
 .player-stats-summary > div {
+
   min-width: 0;
+
   padding: 12px 10px;
+
   border: 1px solid #dce8e1;
+
   border-radius: 13px;
+
   background: rgba(255, 255, 255, .7);
+
   text-align: center;
+
 }
 
 .player-stats-summary span {
+
   display: block;
+
   margin-bottom: 5px;
+
   color: #63736b;
+
   font-size: 9px;
+
   font-weight: 900;
+
   letter-spacing: .04em;
+
   text-transform: uppercase;
+
 }
 
 .player-stats-summary strong {
+
   display: block;
+
   color: var(--green-dark);
+
   font-size: 18px;
+
   line-height: 1.1;
+
 }
 
 .player-stats-summary small {
+
   display: block;
+
   margin-top: 5px;
+
   color: var(--muted);
+
   font-size: 10px;
+
   line-height: 1.4;
+
 }
 
 #playerStatsContent > .section-heading {
+
   margin-top: 26px;
+
   margin-bottom: 10px;
+
 }
 
 #playerStatsRecords > .dashboard-card,
+
 #playerStatsTsp > .dashboard-card,
+
 #playerStatsHistory > .dashboard-card,
+
 #playerStatsTspChanges > .dashboard-card {
+
   margin-bottom: 10px;
+
 }
 
 /* 7 + 8. Records */
 
 .records-type-tabs {
+
   display: grid;
+
   grid-template-columns: 1fr 1fr;
+
   gap: 5px;
+
   margin-bottom: 24px;
+
   padding: 4px;
+
   border: 1px solid #d5e2db;
+
   border-radius: 15px;
+
   background: #e7efeb;
+
 }
 
 .records-tab,
+
 .records-category-tab {
+
   appearance: none;
+
   border: 0;
+
   font: inherit;
+
   font-weight: 800;
+
   cursor: pointer;
+
 }
 
 .records-tab {
+
   min-height: 44px;
+
   padding: 9px 8px;
+
   border-radius: 11px;
+
   background: transparent;
+
   color: #607168;
+
   font-size: 12px;
+
 }
 
 .records-tab.active {
+
   background: var(--green);
+
   color: #fff;
+
   box-shadow: 0 5px 13px rgba(8, 120, 63, .16);
+
 }
 
 .records-result-heading {
+
   margin-bottom: 12px;
+
 }
 
 .records-category-tabs {
+
   display: grid;
+
   grid-template-columns: repeat(3, 1fr);
+
   gap: 7px;
+
   margin-bottom: 14px;
+
 }
 
 .records-category-tab {
+
   min-height: 40px;
+
   padding: 8px 5px;
+
   border: 1px solid #cfe0d7;
+
   border-radius: 11px;
+
   background: #f5f9f7;
+
   color: var(--green-dark);
+
   font-size: 11px;
+
 }
 
 .records-category-tab.active {
+
   border-color: var(--green);
+
   background: var(--green);
+
   color: #fff;
+
   box-shadow: 0 5px 13px rgba(8, 120, 63, .15);
+
 }
 
 .records-category-card {
+
   padding: 14px;
+
 }
 
 .records-category-card .card-heading {
+
   margin-bottom: 12px;
+
 }
 
 .records-table {
+
   overflow: hidden;
+
   border: 1px solid #dce7e1;
+
   border-radius: 12px;
+
   background: #fff;
+
 }
 
 .records-row {
+
   display: grid;
+
   grid-template-columns: 26px minmax(0, 1fr) 45px 42px 52px;
+
   align-items: center;
+
   gap: 5px;
+
   min-height: 48px;
+
   padding: 8px 7px;
+
   border-bottom: 1px solid #e1e9e4;
+
   font-size: 10px;
+
 }
 
 .records-row:last-child {
+
   border-bottom: 0;
+
 }
 
 .records-header {
+
   min-height: 36px;
+
   background: #edf4f0;
+
   color: #617269;
+
   font-size: 8px;
+
   font-weight: 900;
+
   letter-spacing: .03em;
+
   text-transform: uppercase;
+
 }
 
 .records-row > span:not(:nth-child(2)) {
+
   text-align: center;
+
 }
 
 .records-row strong {
+
   line-height: 1.25;
+
 }
 
 .records-row small {
+
   display: block;
+
   margin-top: 3px;
+
   color: var(--muted);
+
   font-size: 8px;
+
   line-height: 1.35;
+
 }
 
 .empty-state.compact {
+
   padding: 12px;
+
 }
 
 /* Desktop */
+
 @media (min-width: 521px) {
+
   .player-stats-summary {
+
     grid-template-columns: repeat(4, minmax(0, 1fr));
+
   }
 
   .series-grid {
+
     grid-template-columns: repeat(3, 1fr);
+
   }
+
 }
 
-
 /* =========================================================
+
    ADL2000 - DEFINITIEVE MOBIELE AFWERKING
+
    ========================================================= */
 
 /* Volledige ploegenstand */
+
 .stand-table-full {
+
   width: 100%;
+
   overflow: hidden;
+
   border: 1px solid var(--border);
+
   border-radius: 16px;
+
   background: var(--surface);
+
 }
 
 .stand-table-full .stand-row {
+
   display: grid;
+
   grid-template-columns: 25px minmax(0, 1fr) 31px 24px 24px 24px 58px;
+
   gap: 3px;
+
   align-items: center;
+
   min-height: 50px;
+
   padding: 7px 7px;
+
 }
 
 .stand-table-full .stand-header {
+
   min-height: 39px;
+
   font-size: 8px;
+
   letter-spacing: .02em;
+
 }
 
 .stand-table-full .stand-team {
+
   min-width: 0;
+
   padding-right: 3px;
+
   overflow: hidden;
+
   font-size: 11px;
+
   font-weight: 750;
+
   line-height: 1.18;
+
   text-overflow: ellipsis;
+
   white-space: nowrap;
+
 }
 
 .stand-table-full .stand-position,
+
 .stand-table-full .stand-gsp,
+
 .stand-table-full .stand-points,
+
 .stand-table-full .stand-row > span:nth-child(n+3) {
+
   text-align: center;
+
 }
 
 .stand-table-full .stand-points {
+
   font-size: 11px;
+
   font-weight: 900;
+
 }
 
 /* Wedstrijddetail */
+
 #matchDetailScreen {
+
   padding-bottom: 92px;
+
 }
 
 .match-detail-hero {
+
   display: grid;
+
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+
   gap: 10px;
+
   align-items: center;
+
   margin: 18px 0 22px;
+
   padding: 18px 14px;
+
   border: 1px solid #d7e4dc;
+
   border-radius: 18px;
+
   background: linear-gradient(145deg, #f9fcfa, #edf6f1);
+
   box-shadow: 0 8px 22px rgba(17, 55, 37, .06);
+
 }
 
 .match-detail-team {
+
   color: var(--text);
+
   font-size: 12px;
+
   font-weight: 850;
+
   line-height: 1.25;
+
   text-align: center;
+
 }
 
 .match-detail-score {
+
   padding: 9px 11px;
+
   border-radius: 11px;
+
   background: #dff3e7;
+
   color: var(--green-dark);
+
   font-size: 19px;
+
   font-weight: 950;
+
   white-space: nowrap;
+
 }
 
 .match-detail-score span {
+
   padding: 0 2px;
+
 }
 
 .match-detail-heading {
+
   margin-bottom: 11px;
+
 }
 
 .match-detail-games {
+
   display: grid;
+
   gap: 11px;
+
 }
 
 .match-game-card {
+
   padding: 14px;
+
   border: 1px solid #d9e5de;
+
   border-radius: 17px;
+
   background: #f8fbf9;
+
   box-shadow: 0 6px 17px rgba(17, 55, 37, .05);
+
 }
 
 .match-game-top {
+
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
+
   gap: 12px;
+
   margin-bottom: 12px;
+
 }
 
 .match-game-top strong {
+
   color: var(--green-dark);
+
   font-size: 12px;
+
 }
 
 .match-game-versus {
+
   display: grid;
+
   grid-template-columns: minmax(0, 1fr) 25px minmax(0, 1fr);
+
   gap: 7px;
+
   align-items: stretch;
+
 }
 
 .match-game-vs {
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   color: #819088;
+
   font-size: 8px;
+
   font-weight: 950;
+
 }
 
 .match-game-player {
+
   min-width: 0;
+
   padding: 11px 8px;
+
   border: 1px solid #dce8e1;
+
   border-radius: 13px;
+
   background: #fff;
+
   text-align: center;
+
 }
 
 .match-game-side {
+
   display: block;
+
   margin-bottom: 4px;
+
   color: #728078;
+
   font-size: 8px;
+
   font-weight: 900;
+
   letter-spacing: .05em;
+
   text-transform: uppercase;
+
 }
 
 .match-game-name {
+
   display: block;
+
   min-height: 32px;
+
   color: var(--green-dark);
+
   font-size: 12px;
+
   line-height: 1.25;
+
 }
 
 .match-game-stats {
+
   display: grid;
+
   grid-template-columns: repeat(5, 1fr);
+
   gap: 3px;
+
   margin-top: 9px;
+
 }
 
 .match-game-stats span {
+
   min-width: 0;
+
 }
 
 .match-game-stats small,
+
 .match-game-stats b {
+
   display: block;
+
 }
 
 .match-game-stats small {
+
   color: #7b8981;
+
   font-size: 6px;
+
   font-weight: 900;
+
 }
 
 .match-game-stats b {
+
   margin-top: 2px;
+
   color: var(--text);
+
   font-size: 8px;
+
 }
 
 /* Carrièrehistoriek */
+
 .player-history-table {
+
   width: 100%;
+
   overflow: hidden;
+
   border: 1px solid #d9e5de;
+
   border-radius: 16px;
+
   background: #fff;
+
   box-shadow: 0 6px 18px rgba(17, 55, 37, .05);
+
 }
 
 .player-history-row {
+
   display: grid;
+
   grid-template-columns: 70px 34px 52px 35px 25px 25px 25px minmax(38px, 1fr);
+
   gap: 2px;
+
   align-items: center;
+
   min-height: 43px;
+
   padding: 7px 7px;
+
   border-bottom: 1px solid #e1e9e4;
+
   font-size: 9px;
+
   text-align: center;
+
 }
 
 .player-history-row:last-child {
+
   border-bottom: 0;
+
 }
 
 .player-history-row > span:first-child {
+
   text-align: left;
+
 }
 
 .player-history-header {
+
   min-height: 36px;
+
   background: #edf4f0;
+
   color: #63736b;
+
   font-size: 7px;
+
   font-weight: 900;
+
   letter-spacing: .02em;
+
   text-transform: uppercase;
+
 }
 
 /* Records - leesbaar i.p.v. microscopisch */
+
 .records-category-card {
+
   padding: 13px 10px;
+
 }
 
 .records-table {
+
   overflow: visible;
+
 }
 
 .records-row {
+
   grid-template-columns: 28px minmax(0, 1fr) 48px 44px 50px;
+
   gap: 5px;
+
   min-height: 58px;
+
   padding: 9px 6px;
+
   font-size: 11px;
+
 }
 
 .records-header {
+
   min-height: 38px;
+
   font-size: 8px;
+
 }
 
 .records-row > span:nth-child(2) {
+
   min-width: 0;
+
 }
 
 .records-row strong {
+
   display: block;
+
   font-size: 11px;
+
   line-height: 1.25;
+
 }
 
 .records-row small {
+
   display: block;
+
   margin-top: 4px;
+
   font-size: 8px;
+
   line-height: 1.35;
+
 }
 
 .records-row > span:not(:nth-child(2)) {
+
   font-weight: 700;
+
 }
 
 /* Onderste navigatie altijd boven details */
+
 .bottom-nav {
+
   z-index: 100;
+
 }
 
 @media (max-width: 390px) {
+
   .stand-table-full .stand-row {
+
     grid-template-columns: 22px minmax(0, 1fr) 28px 22px 22px 22px 52px;
+
     padding-left: 5px;
+
     padding-right: 5px;
+
   }
 
   .stand-table-full .stand-team {
+
     font-size: 10px;
+
   }
 
   .match-game-card {
+
     padding: 12px 9px;
+
   }
 
   .match-game-versus {
+
     gap: 4px;
+
   }
 
   .match-game-player {
+
     padding-left: 5px;
+
     padding-right: 5px;
+
   }
 
   .player-history-row {
+
     grid-template-columns: 62px 30px 48px 30px 22px 22px 22px minmax(34px, 1fr);
+
     padding-left: 4px;
+
     padding-right: 4px;
+
     font-size: 8px;
+
   }
+
 }
 
-
 /* =========================================================
+
    MOBIELE LEESBAARHEID - 24/09/2026
+
    ========================================================= */
 
 /* Individueel klassement: groter + positie en speler blijven staan */
+
 .individual-stand-table {
+
   overflow-x: auto;
+
   position: relative;
+
 }
 
 .individual-stand-row {
+
   grid-template-columns: 42px 190px 175px 55px 62px 55px 72px;
+
   min-width: 651px;
+
   min-height: 58px;
+
   gap: 0;
+
   padding: 0;
+
   font-size: 13px;
+
 }
 
 .individual-stand-row > span {
+
   display: flex;
+
   align-items: center;
+
   min-height: 58px;
+
   padding: 10px 9px;
+
   background: var(--surface);
+
 }
 
 .individual-stand-header {
+
   min-height: 46px;
+
   font-size: 10px;
+
 }
 
 .individual-stand-header > span {
+
   min-height: 46px;
+
   background: #edf4f0;
+
 }
 
 .individual-stand-row > span:nth-child(1),
+
 .individual-stand-row > span:nth-child(2) {
+
   position: sticky;
+
   z-index: 3;
+
 }
 
 .individual-stand-row > span:nth-child(1) {
+
   left: 0;
+
   justify-content: center;
+
 }
 
 .individual-stand-row > span:nth-child(2) {
+
   left: 42px;
+
   z-index: 2;
+
   box-shadow: 8px 0 10px -10px rgba(17, 55, 37, .55);
+
 }
 
 .individual-stand-row.my-team > span {
+
   background: #e4f6eb;
+
   color: var(--green-dark);
+
 }
 
 /* Andere reeksen: Ploegen / Individueel */
+
 .series-stand-mode {
+
   display: grid;
+
   grid-template-columns: 1fr 1fr;
+
   gap: 5px;
+
   margin: 0 0 16px;
+
   padding: 4px;
+
   border: 1px solid #d5e2db;
+
   border-radius: 15px;
+
   background: #e7efeb;
+
 }
 
 .series-stand-mode .primary-button,
+
 .series-stand-mode .secondary-button {
+
   min-height: 43px;
+
   margin: 0;
+
   padding: 10px 8px;
+
   border: 0;
+
   border-radius: 11px;
+
   box-shadow: none;
+
   font-size: 13px;
+
 }
 
 .series-stand-mode .secondary-button {
+
   background: transparent;
+
   color: #617269;
+
 }
 
 /* Wedstrijddetails: spelers onder elkaar zodat alles groter kan */
+
 .match-game-card {
+
   padding: 16px;
+
 }
 
 .match-game-top {
+
   margin-bottom: 14px;
+
 }
 
 .match-game-top .card-label,
+
 .match-game-top strong {
+
   font-size: 13px;
+
 }
 
 .match-game-versus {
+
   display: grid;
+
   grid-template-columns: 1fr;
+
   gap: 8px;
+
 }
 
 .match-game-vs {
+
   min-height: 22px;
+
   font-size: 10px;
+
 }
 
 .match-game-player {
+
   padding: 14px 12px;
+
   border-radius: 14px;
+
 }
 
 .match-game-side {
+
   margin-bottom: 5px;
+
   font-size: 9px;
+
 }
 
 .match-game-name {
+
   min-height: 0;
+
   font-size: 16px;
+
   line-height: 1.25;
+
 }
 
 .match-game-stats {
+
   gap: 6px;
+
   margin-top: 13px;
+
 }
 
 .match-game-stats small {
+
   font-size: 8px;
+
 }
 
 .match-game-stats b {
+
   margin-top: 3px;
+
   font-size: 11px;
+
 }
 
 /* Carrièrehistoriek: grotere tabel, horizontaal schuifbaar */
+
 .player-history-table {
+
   overflow-x: auto;
+
   -webkit-overflow-scrolling: touch;
+
 }
 
 .player-history-row {
+
   grid-template-columns: 92px 55px 78px 58px 42px 42px 42px 68px;
+
   min-width: 477px;
+
   min-height: 55px;
+
   gap: 0;
+
   padding: 0;
+
   font-size: 12px;
+
 }
 
 .player-history-row > span {
+
   padding: 10px 7px;
+
 }
 
 .player-history-header {
+
   min-height: 43px;
+
   font-size: 9px;
+
 }
 
 /* Records: niet meer samenpersen; grotere tekst en horizontaal schuiven */
+
 .records-category-card {
+
   padding: 15px 12px;
+
 }
 
 .records-table {
+
   overflow-x: auto;
+
   -webkit-overflow-scrolling: touch;
+
 }
 
 .records-row {
+
   grid-template-columns: 38px 235px 65px 65px 75px;
+
   min-width: 478px;
+
   min-height: 68px;
+
   gap: 0;
+
   padding: 0;
+
   font-size: 13px;
+
 }
 
 .records-row > span {
+
   padding: 10px 8px;
+
 }
 
 .records-header {
+
   min-height: 44px;
+
   font-size: 10px;
+
 }
 
 .records-row strong {
+
   font-size: 14px;
+
   line-height: 1.25;
+
 }
 
 .records-row small {
+
   margin-top: 5px;
+
   font-size: 10px;
+
   line-height: 1.35;
+
 }
 
 @media (max-width: 390px) {
+
   .match-game-card {
+
     padding: 14px 12px;
+
   }
 
   .match-game-player {
+
     padding: 13px 10px;
+
   }
 
   .match-game-name {
+
     font-size: 15px;
+
   }
 
   .player-history-row {
+
     grid-template-columns: 92px 55px 78px 58px 42px 42px 42px 68px;
+
     padding: 0;
+
     font-size: 12px;
+
   }
+
 }
 
 /* =========================================================
+
    WEDSTRIJDDETAIL - STATISTIEKEN GROTER + APARTE CELLEN
+
    ========================================================= */
 
 .match-game-stats {
+
   display: grid;
+
   grid-template-columns: repeat(5, 1fr);
+
   gap: 0;
+
   margin-top: 14px;
 
   border: 1px solid var(--border);
+
   border-radius: 10px;
 
   background: #f7faf8;
+
   overflow: hidden;
+
 }
 
 .match-game-stats span {
+
   min-width: 0;
+
   padding: 9px 3px 8px;
 
   text-align: center;
 
   border-right: 1px solid var(--border);
+
 }
 
 .match-game-stats span:last-child {
+
   border-right: 0;
+
 }
 
 .match-game-stats small {
+
   display: block;
 
   margin-bottom: 4px;
@@ -2313,13 +3345,17 @@ button {
   color: #718078;
 
   font-size: 9px;
+
   line-height: 1;
+
   font-weight: 900;
 
   text-transform: uppercase;
+
 }
 
 .match-game-stats b {
+
   display: block;
 
   margin: 0;
@@ -2327,29 +3363,43 @@ button {
   color: var(--text);
 
   font-size: 14px;
+
   line-height: 1.15;
+
   font-weight: 900;
+
 }
 
 /* =========================================================
+
    WEDSTRIJDDETAIL - 6 DUIDELIJKE STATISTIEKCELLEN
+
    ========================================================= */
 
 .match-game-stats {
+
   display: grid;
+
   grid-template-columns: repeat(6, 1fr);
+
   gap: 0;
+
   margin-top: 14px;
 
   border: 1px solid var(--border);
+
   border-radius: 11px;
 
   background: #f7faf8;
+
   overflow: hidden;
+
 }
 
 .match-game-stats span {
+
   display: block;
+
   min-width: 0;
 
   padding: 9px 2px 8px;
@@ -2357,13 +3407,17 @@ button {
   text-align: center;
 
   border-right: 1px solid var(--border);
+
 }
 
 .match-game-stats span:last-child {
+
   border-right: 0;
+
 }
 
 .match-game-stats small {
+
   display: block;
 
   margin: 0 0 5px;
@@ -2371,13 +3425,17 @@ button {
   color: #718078;
 
   font-size: 8px;
+
   line-height: 1;
+
   font-weight: 900;
 
   text-transform: uppercase;
+
 }
 
 .match-game-stats b {
+
   display: block;
 
   margin: 0;
@@ -2385,136 +3443,199 @@ button {
   color: var(--text);
 
   font-size: 14px;
+
   line-height: 1.1;
+
   font-weight: 900;
+
 }
 
 /* PTN visueel licht onderscheiden:
+
    dit zijn de punten die de speler voor de ploeg oplevert */
+
 .match-game-stats .match-game-ptn {
+
   background: var(--green-soft);
+
 }
 
 .match-game-stats .match-game-ptn small,
+
 .match-game-stats .match-game-ptn b {
+
   color: var(--green-dark);
+
 }
 
 /* =========================================================
+
    AANKLIKBARE PLOEGNAMEN
+
    ========================================================= */
 
 .team-link {
+
   display: block;
+
   width: 100%;
+
   min-width: 0;
 
   padding: 0;
+
   margin: 0;
 
   border: 0;
+
   background: transparent;
 
   color: inherit;
+
   font: inherit;
+
   font-weight: 700;
 
   text-align: left;
+
   cursor: pointer;
 
   appearance: none;
+
   -webkit-appearance: none;
+
 }
 
 .team-link:hover {
+
   color: var(--green);
+
 }
 
 .team-link:focus-visible {
+
   outline: 2px solid var(--green);
+
   outline-offset: 3px;
+
   border-radius: 4px;
+
 }
 
 /* =========================================================
+
    PLOEGDETAIL
+
    ========================================================= */
 
 /* Bovenste ploegkaart */
 
 .team-detail-summary h3 {
+
   margin-top: 5px;
+
   font-size: 21px;
+
   line-height: 1.2;
+
 }
 
 .team-detail-meta {
+
   display: grid;
+
   grid-template-columns: repeat(3, 1fr);
+
   gap: 8px;
+
   margin-top: 16px;
+
 }
 
 .team-detail-meta > span {
+
   display: flex;
+
   min-width: 0;
+
   min-height: 62px;
+
   padding: 10px 7px;
 
   flex-direction: column;
+
   align-items: center;
+
   justify-content: center;
 
   border: 1px solid #d7e7de;
+
   border-radius: 12px;
 
   background: var(--green-soft);
+
   text-align: center;
+
 }
 
 .team-detail-meta small {
+
   display: block;
+
   margin-bottom: 5px;
 
   color: var(--muted);
 
   font-size: 9px;
+
   font-weight: 800;
+
   letter-spacing: .04em;
+
   text-transform: uppercase;
+
 }
 
 .team-detail-meta strong {
+
   color: var(--green-dark);
 
   font-size: 14px;
-  line-height: 1.2;
-}
 
+  line-height: 1.2;
+
+}
 
 /* Titels in kaarten */
 
 .team-detail-heading {
+
   margin-top: 5px;
 
   font-size: 20px;
-  line-height: 1.25;
-}
 
+  line-height: 1.25;
+
+}
 
 /* Speellokaal */
 
 .team-detail-address {
+
   margin-top: 8px;
 
   color: var(--muted);
 
   font-size: 14px;
+
   line-height: 1.45;
+
 }
 
 .team-detail-contact {
+
   display: flex;
+
   align-items: center;
 
   width: fit-content;
@@ -2524,23 +3645,31 @@ button {
   color: var(--green-dark);
 
   font-size: 14px;
+
   font-weight: 800;
 
   text-decoration: none;
+
 }
 
 .team-detail-route {
+
   display: flex;
+
   width: 100%;
+
   min-height: 45px;
 
   margin-top: 15px;
+
   padding: 11px 14px;
 
   align-items: center;
+
   justify-content: center;
 
   border: 1px solid #c6dfd1;
+
   border-radius: 12px;
 
   background: var(--green-soft);
@@ -2548,29 +3677,37 @@ button {
   color: var(--green-dark);
 
   font-size: 13px;
+
   font-weight: 900;
 
   text-decoration: none;
-}
 
+}
 
 /* Kapitein */
 
 .team-detail-contact-list {
+
   display: grid;
+
   gap: 8px;
 
   margin-top: 13px;
+
 }
 
 .team-detail-contact-list a {
+
   display: flex;
+
   align-items: center;
 
   min-height: 42px;
+
   padding: 10px 12px;
 
   border: 1px solid var(--border);
+
   border-radius: 11px;
 
   background: var(--surface-soft);
@@ -2578,37 +3715,45 @@ button {
   color: var(--green-dark);
 
   font-size: 13px;
+
   font-weight: 700;
 
   text-decoration: none;
 
   overflow-wrap: anywhere;
-}
 
+}
 
 /* Spelers titel */
 
 .team-detail-player-heading {
+
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   gap: 12px;
 
   margin-bottom: 14px;
+
 }
 
 .team-detail-player-heading h3 {
+
   margin-top: 4px;
 
   font-size: 20px;
+
 }
 
 .team-detail-player-heading > strong {
+
   display: grid;
 
   width: 34px;
+
   height: 34px;
 
   place-items: center;
@@ -2620,30 +3765,37 @@ button {
   color: var(--green-dark);
 
   font-size: 14px;
-}
 
+}
 
 /* Spelerslijst */
 
 .team-detail-players {
+
   display: grid;
+
   gap: 7px;
+
 }
 
 .team-detail-player {
+
   display: flex;
 
   width: 100%;
+
   min-height: 57px;
 
   padding: 10px 11px;
 
   align-items: center;
+
   justify-content: space-between;
 
   gap: 12px;
 
   border: 1px solid var(--border);
+
   border-radius: 12px;
 
   background: #f8fbf9;
@@ -2655,25 +3807,37 @@ button {
   cursor: pointer;
 
   appearance: none;
+
   -webkit-appearance: none;
+
 }
 
 .team-detail-player:active {
+
   transform: scale(.99);
+
 }
 
 .team-detail-player > span:first-child {
+
   display: grid;
+
   min-width: 0;
+
   gap: 3px;
+
 }
 
 .team-detail-player > span:first-child > strong {
+
   font-size: 14px;
+
   line-height: 1.25;
+
 }
 
 .team-detail-player > span:first-child > small {
+
   width: fit-content;
 
   padding: 3px 7px;
@@ -2685,14 +3849,17 @@ button {
   color: var(--green-dark);
 
   font-size: 9px;
-  font-weight: 900;
-  text-transform: uppercase;
-}
 
+  font-weight: 900;
+
+  text-transform: uppercase;
+
+}
 
 /* TSP rechts */
 
 .team-player-tsp {
+
   display: grid;
 
   min-width: 48px;
@@ -2708,33 +3875,43 @@ button {
   color: var(--green-dark);
 
   text-align: center;
+
 }
 
 .team-player-tsp small {
+
   font-size: 8px;
+
   font-weight: 900;
+
 }
 
 .team-player-tsp strong {
+
   margin-top: 1px;
 
   font-size: 17px;
-  line-height: 1;
-}
 
+  line-height: 1;
+
+}
 
 /* Klikbare ploegnaam in de stand */
 
 .team-link {
+
   display: block;
 
   width: 100%;
+
   min-width: 0;
 
   margin: 0;
+
   padding: 0;
 
   border: 0;
+
   outline: 0;
 
   background: transparent;
@@ -2742,6 +3919,7 @@ button {
   color: inherit;
 
   font: inherit;
+
   font-weight: 700;
 
   text-align: left;
@@ -2749,143 +3927,191 @@ button {
   cursor: pointer;
 
   appearance: none;
+
   -webkit-appearance: none;
+
 }
 
 .team-link:hover {
+
   color: var(--green);
+
 }
 
 .team-link:focus-visible {
+
   outline: 2px solid var(--green);
+
   outline-offset: 3px;
+
   border-radius: 4px;
+
 }
 
 /* =========================================================
+
    LOKALEN & ADRESSEN
+
    ========================================================= */
 
 .venues-segments {
+
   margin-bottom: 18px;
+
 }
 
 .venues-segments .segment {
-  min-width: 0;
-  padding-left: 8px;
-  padding-right: 8px;
-}
 
+  min-width: 0;
+
+  padding-left: 8px;
+
+  padding-right: 8px;
+
+}
 
 /* Lijst */
 
 #venuesList {
-  display: grid;
-  gap: 12px;
-}
 
+  display: grid;
+
+  gap: 12px;
+
+}
 
 /* Kaart */
 
 .venue-card {
-  padding: 0;
-  overflow: hidden;
-}
 
+  padding: 0;
+
+  overflow: hidden;
+
+}
 
 /* Ploeg bovenaan */
 
 .venue-team-button {
+
   position: relative;
 
   display: block;
+
   width: 100%;
 
   margin: 0;
+
   padding: 15px 46px 13px 16px;
 
   border: 0;
+
   border-bottom: 1px solid var(--border);
 
   background: var(--green-soft);
 
   color: var(--text);
+
   text-align: left;
 
   cursor: pointer;
 
   appearance: none;
+
   -webkit-appearance: none;
+
 }
 
 .venue-team-button .card-label {
+
   display: block;
+
   margin-bottom: 4px;
+
 }
 
 .venue-team-button > strong {
+
   display: block;
 
   color: var(--green-dark);
 
   font-size: 16px;
+
   line-height: 1.25;
+
   font-weight: 900;
+
 }
 
 .venue-arrow {
+
   position: absolute;
 
   top: 50%;
+
   right: 17px;
 
   color: var(--green);
 
   font-size: 26px;
+
   line-height: 1;
 
   transform: translateY(-50%);
-}
 
+}
 
 /* Lokaal */
 
 .venue-info {
+
   padding: 15px 16px 13px;
+
 }
 
 .venue-info h3 {
+
   margin: 0 0 5px;
 
   color: var(--text);
 
   font-size: 18px;
+
   line-height: 1.25;
+
 }
 
 .venue-info p {
+
   margin: 0;
 
   color: var(--muted);
 
   font-size: 13px;
-  line-height: 1.45;
-}
 
+  line-height: 1.45;
+
+}
 
 /* Speeldag + uur */
 
 .venue-meta {
+
   display: flex;
+
   gap: 7px;
 
   margin-top: 12px;
+
 }
 
 .venue-meta span {
+
   display: inline-flex;
 
   min-height: 30px;
+
   padding: 6px 10px;
 
   align-items: center;
@@ -2897,30 +4123,39 @@ button {
   color: var(--green-dark);
 
   font-size: 11px;
-  font-weight: 800;
-}
 
+  font-weight: 800;
+
+}
 
 /* Actieknoppen */
 
 .venue-actions {
+
   display: grid;
+
   grid-template-columns: repeat(2, 1fr);
+
   gap: 8px;
 
   padding: 0 16px 16px;
+
 }
 
 .venue-actions a {
+
   display: flex;
 
   min-height: 42px;
+
   padding: 9px 12px;
 
   align-items: center;
+
   justify-content: center;
 
   border: 1px solid #c9ded2;
+
   border-radius: 11px;
 
   background: #fff;
@@ -2928,251 +4163,1704 @@ button {
   color: var(--green-dark);
 
   font-size: 12px;
+
   font-weight: 900;
 
   text-decoration: none;
+
 }
 
 .venue-actions a:last-child {
+
   border-color: var(--green);
 
   background: var(--green);
 
   color: #fff;
-}
 
+}
 
 /* Als er maar één actieknop is */
 
 .venue-actions a:only-child {
-  grid-column: 1 / -1;
-}
 
+  grid-column: 1 / -1;
+
+}
 
 /* Interactie */
 
 .venue-team-button:active,
+
 .venue-actions a:active {
+
   transform: scale(.99);
+
 }
 
 .venue-team-button:focus-visible,
-.venue-actions a:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: -2px;
-}
 
+.venue-actions a:focus-visible {
+
+  outline: 2px solid var(--green);
+
+  outline-offset: -2px;
+
+}
 
 /* Kleine schermen */
 
 @media (max-width: 380px) {
+
   .venue-info h3 {
+
     font-size: 16px;
+
   }
 
   .venue-team-button > strong {
+
     font-size: 15px;
+
   }
 
   .venue-actions {
+
     grid-template-columns: 1fr;
+
   }
 
   .venue-actions a:only-child {
+
     grid-column: auto;
+
   }
+
 }
 
 /* =========================================================
+
    KVA - KALENDER
+
    ========================================================= */
 
 .calendar-match.calendar-match-kva {
+
   border-color: #d8c37a;
+
   background:
+
     linear-gradient(
+
       135deg,
+
       #fffdf5,
+
       #f8f3df
+
     );
+
 }
 
 .calendar-match.calendar-match-kva.my-match {
+
   border-color: #d8c37a;
+
   background:
+
     linear-gradient(
+
       135deg,
+
       #fffdf5,
+
       #f8f3df
+
     );
+
 }
 
 .calendar-kva-badge {
+
   display: inline-flex;
+
   align-items: center;
 
   margin-left: 6px;
+
   padding: 3px 6px;
 
   border: 1px solid #d8c37a;
+
   border-radius: 6px;
 
   background: #f3e6ad;
+
   color: #65520b;
 
   font-size: 8px;
+
   line-height: 1;
+
   font-weight: 900;
+
   letter-spacing: .04em;
+
   vertical-align: middle;
+
 }
 
 /* =========================================================
+
    KVA - EIGEN POULE
+
    ========================================================= */
 
 .series-button.series-kva-own {
+
   border-color: #d8c37a;
 
   background:
+
     linear-gradient(
+
       135deg,
+
       #fffdf5,
+
       #f8f3df
+
     );
+
 }
 
 .series-button.series-kva-own strong {
+
   color: #65520b;
+
 }
 
 .series-button.series-kva-own span {
+
   color: #78651b;
+
 }
 
 /* KVA knock-out: compacte faseknoppen */
+
 .kva-knockout-heading {
+
   margin-top: 22px;
+
 }
 
 .kva-phase-grid {
+
   display: grid;
+
   grid-template-columns: repeat(3, minmax(0, 1fr));
+
   gap: 10px;
+
 }
 
 .kva-phase-button {
+
   min-width: 0;
+
   min-height: 54px;
+
   padding: 10px 8px;
+
   border: 1px solid #d8c37a;
+
   border-radius: 14px;
+
   background: linear-gradient(180deg, #fffdf5 0%, #f8f3df 100%);
+
   color: #04532d;
+
   font: inherit;
+
   cursor: pointer;
+
   text-align: center;
+
 }
 
 .kva-phase-button strong {
+
   display: block;
+
   font-size: 0.95rem;
+
   line-height: 1.15;
+
 }
 
 .kva-phase-button:active {
+
   transform: translateY(1px);
+
 }
 
 @media (max-width: 390px) {
+
   .kva-phase-grid {
+
     grid-template-columns: repeat(2, minmax(0, 1fr));
+
   }
+
 }
 
 /* =========================================================
+
    DESKTOP / LAPTOP LAYOUT
+
    Mobiele layout blijft ongewijzigd
+
    ========================================================= */
 
 @media (min-width: 900px) {
 
   .app {
+
     width: min(100%, 1180px);
+
     max-width: 1180px;
+
   }
 
   .app-content {
+
     padding-left: 32px;
+
     padding-right: 32px;
+
   }
 
   .bottom-nav {
+
     width: min(100%, 1180px);
+
   }
+
 }
 
 /* =========================================================
+
    DESKTOP HOME
+
    Alleen actief op laptop / desktop
+
    Mobiele layout blijft volledig ongewijzigd
+
    ========================================================= */
 
 @media (min-width: 900px) {
 
   /* Home wordt een grid */
+
   #homeScreen {
+
     display: grid;
+
     grid-template-columns: repeat(2, minmax(0, 1fr));
+
     gap: 18px;
+
     align-items: start;
+
   }
 
   /* hidden moet altijd winnen */
+
   #homeScreen[hidden] {
+
     display: none !important;
+
   }
 
   /* Begroeting over volledige breedte */
+
   #homeScreen .home-greeting {
+
     grid-column: 1 / -1;
+
     margin-bottom: 0;
+
   }
 
   /* Spelerkaart over volledige breedte */
+
   #homeScreen > .player-card {
+
     grid-column: 1 / -1;
+
     margin-bottom: 0;
+
   }
 
   /* Alle overige kaarten */
+
   #homeScreen > .dashboard-card:not(.player-card) {
+
     margin-bottom: 0;
+
     height: 100%;
+
   }
 
   /* Stand links */
+
   #homeScreen > .dashboard-card:nth-of-type(2) {
+
     grid-column: 1;
+
   }
 
   /* Vorige wedstrijd rechts */
+
   #homeScreen > .dashboard-card:nth-of-type(3) {
+
     grid-column: 2;
+
   }
 
   /* Volgende wedstrijd onderaan over volledige breedte */
+
   #homeScreen > .dashboard-card:nth-of-type(4) {
+
     grid-column: 1 / -1;
+
   }
 
   /* Iets meer ademruimte in desktopkaarten */
+
   #homeScreen .dashboard-card {
+
     padding: 20px;
+
   }
 
   /* Stand hoeft op desktop geen extra binnenmarge te krijgen */
+
   #homeScreen #standSnippet {
+
     margin-top: 14px;
+
+  }
+
+}
+
+/* =========================================================
+
+   SPEELDAG - MOBIELE TABELWEERGAVE
+
+   ========================================================= */
+
+.matchday-week-nav {
+
+  display: grid;
+
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin: 0 0 16px;
+
+}
+
+.matchday-week-button {
+
+  width: 44px;
+
+  height: 42px;
+
+  border: 1px solid #cfe0d7;
+
+  border-radius: 12px;
+
+  background: var(--surface);
+
+  color: var(--green-dark);
+
+  font-size: 25px;
+
+  font-weight: 900;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 12px rgba(17, 55, 37, .05);
+
+}
+
+.matchday-week-button:disabled {
+
+  opacity: .32;
+
+  cursor: default;
+
+}
+
+.matchday-week-title {
+
+  display: flex;
+
+  min-height: 42px;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 1px solid #d6e3dc;
+
+  border-radius: 12px;
+
+  background: #f4f8f6;
+
+  color: var(--green-dark);
+
+  font-size: 14px;
+
+  font-weight: 900;
+
+}
+
+#matchdayContent {
+
+  display: grid;
+
+  gap: 15px;
+
+}
+
+.matchday-match {
+
+  overflow: hidden;
+
+  border: 1px solid #d8e3dd;
+
+  border-radius: 15px;
+
+  background: #fff;
+
+  box-shadow: 0 6px 18px rgba(17, 55, 37, .06);
+
+}
+
+.matchday-match.my-match {
+
+  border-color: #9fceb4;
+
+  box-shadow: 0 7px 20px rgba(8, 120, 63, .10);
+
+}
+
+.matchday-match-head {
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+
+  width: 100%;
+
+  min-height: 58px;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 9px 8px;
+
+  border: 0;
+
+  border-bottom: 1px solid #d4c36e;
+
+  background: linear-gradient(180deg, #f7e98c, #f1dd72);
+
+  color: #2c321d;
+
+  cursor: pointer;
+
+}
+
+.matchday-match.my-match .matchday-match-head {
+
+  background: linear-gradient(180deg, #f4e58a, #ead46a);
+
+}
+
+.matchday-team {
+
+  min-width: 0;
+
+  font-size: 11px;
+
+  font-weight: 900;
+
+  line-height: 1.2;
+
+}
+
+.matchday-team-home {
+
+  text-align: left;
+
+}
+
+.matchday-team-away {
+
+  text-align: right;
+
+}
+
+.matchday-score {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 4px;
+
+  min-width: 70px;
+
+  padding: 6px 7px;
+
+  border: 1px solid rgba(91, 82, 20, .18);
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, .48);
+
+  color: #25301e;
+
+  font-size: 13px;
+
+  font-weight: 950;
+
+  white-space: nowrap;
+
+}
+
+.matchday-score b {
+
+  color: #6e6c50;
+
+}
+
+.matchday-games {
+
+  background: #fff;
+
+}
+
+.matchday-game-row {
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+
+  align-items: stretch;
+
+  border-bottom: 1px solid #dfe7e2;
+
+}
+
+.matchday-game-row:last-child {
+
+  border-bottom: 0;
+
+}
+
+.matchday-game-row:nth-child(even) {
+
+  background: #f8faf9;
+
+}
+
+.matchday-player {
+
+  min-width: 0;
+
+  padding: 9px 6px 8px;
+
+}
+
+.matchday-player-home {
+
+  border-right: 1px solid #e2e9e5;
+
+}
+
+.matchday-player-away {
+
+  border-left: 1px solid #e2e9e5;
+
+}
+
+.matchday-player > strong {
+
+  display: block;
+
+  min-height: 28px;
+
+  margin-bottom: 7px;
+
+  color: var(--text);
+
+  font-size: 10px;
+
+  font-weight: 850;
+
+  line-height: 1.25;
+
+}
+
+.matchday-player-away > strong {
+
+  text-align: right;
+
+}
+
+.matchday-player-stats {
+
+  display: grid;
+
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  overflow: hidden;
+
+  border: 1px solid #e0e7e3;
+
+  border-radius: 7px;
+
+  background: #fff;
+
+}
+
+.matchday-player-stats span {
+
+  min-width: 0;
+
+  padding: 4px 1px 5px;
+
+  border-right: 1px solid #e5ebe7;
+
+  color: #27352e;
+
+  font-size: 9px;
+
+  font-weight: 850;
+
+  line-height: 1.05;
+
+  text-align: center;
+
+}
+
+.matchday-player-stats span:last-child {
+
+  border-right: 0;
+
+}
+
+.matchday-player-stats small {
+
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #718078;
+
+  font-size: 6px;
+
+  font-weight: 900;
+
+  line-height: 1;
+
+}
+
+.matchday-gsp {
+
+  background: #edf7f1;
+
+  color: var(--green-dark) !important;
+
+}
+
+.matchday-brt {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #f1f5f3;
+
+  color: var(--green-dark);
+
+  text-align: center;
+
+}
+
+.matchday-brt small {
+
+  margin-bottom: 3px;
+
+  color: #738179;
+
+  font-size: 6px;
+
+  font-weight: 900;
+
+}
+
+.matchday-brt strong {
+
+  font-size: 11px;
+
+  font-weight: 950;
+
+}
+
+.matchday-no-games {
+
+  padding: 15px;
+
+  color: var(--muted);
+
+  font-size: 12px;
+
+  text-align: center;
+
+}
+
+/* Zes navigatieknoppen: compact maar leesbaar. */
+
+.bottom-nav {
+
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+
+}
+
+.nav-item {
+
+  padding-left: 1px;
+
+  padding-right: 1px;
+
+  font-size: 8px;
+
+}
+
+.nav-icon {
+
+  font-size: 18px;
+
+}
+
+@media (max-width: 390px) {
+
+  .matchday-match-head {
+
+    gap: 5px;
+
+    padding-left: 6px;
+
+    padding-right: 6px;
+
+  }
+
+  .matchday-team {
+
+    font-size: 10px;
+
+  }
+
+  .matchday-score {
+
+    min-width: 62px;
+
+    padding-left: 5px;
+
+    padding-right: 5px;
+
+    font-size: 12px;
+
+  }
+
+  .matchday-game-row {
+
+    grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr);
+
+  }
+
+  .matchday-player {
+
+    padding-left: 4px;
+
+    padding-right: 4px;
+
+  }
+
+  .matchday-player > strong {
+
+    font-size: 9px;
+
+  }
+
+  .matchday-player-stats span {
+
+    font-size: 8px;
+
+  }
+
+  .matchday-player-stats small {
+
+    font-size: 5.5px;
+
+  }
+
+}
+
+/* =========================================================
+   SPEELDAG - COMPACTE CORRECTIE
+   ========================================================= */
+
+#matchdayScreen .matchday-player {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#matchdayScreen .matchday-player > strong {
+  min-height: 18px;
+  margin-bottom: 2px;
+  line-height: 1.12;
+}
+
+#matchdayScreen .matchday-player-stats span {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+#matchdayScreen .matchday-player-stats small {
+  margin-bottom: 1px;
+}
+
+#matchdayScreen .matchday-brt small,
+#matchdayScreen .matchday-brt strong {
+  position: relative;
+  top: 4px;
+}
+
+@media (max-width: 390px) {
+  #matchdayScreen .matchday-player {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  #matchdayScreen .matchday-player > strong {
+    min-height: 18px;
+    margin-bottom: 2px;
+  }
+}
+
+
+/* =========================================================
+   WEDSTRIJDDETAIL - VARIANT B
+   Compacte mobiele tabelweergave
+   ========================================================= */
+
+#matchDetailScreen .match-detail-hero-compact {
+  margin: 14px 0 12px;
+  padding: 14px 10px;
+  gap: 8px;
+  border-radius: 15px;
+}
+
+#matchDetailScreen .match-detail-hero-compact .match-detail-team {
+  font-size: 13px;
+  line-height: 1.2;
+  font-weight: 850;
+}
+
+#matchDetailScreen .match-detail-hero-compact .match-detail-score {
+  padding: 8px 9px;
+  font-size: 20px;
+}
+
+#matchDetailScreen .match-detail-table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 2px 8px;
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+#matchDetailScreen .match-detail-table-heading strong {
+  display: grid;
+  min-width: 25px;
+  height: 25px;
+  padding: 0 6px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-size: 12px;
+}
+
+#matchDetailScreen .match-detail-games-compact {
+  display: grid;
+  gap: 9px;
+}
+
+#matchDetailScreen .match-detail-party {
+  overflow: hidden;
+  border: 1px solid #d7e4dc;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 13px rgba(17, 55, 37, .045);
+}
+
+#matchDetailScreen .match-detail-party-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 7px 10px;
+  border-bottom: 1px solid #dbe7e0;
+  background: #edf5f1;
+  color: var(--green-dark);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#matchDetailScreen .match-detail-party-brt {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+#matchDetailScreen .match-detail-party-brt strong {
+  margin-left: 3px;
+  color: var(--green-dark);
+  font-size: 12px;
+}
+
+#matchDetailScreen .match-detail-party-player {
+  display: grid;
+  grid-template-columns: minmax(100px, 1.15fr) minmax(0, 1.85fr);
+  align-items: stretch;
+  min-height: 61px;
+  border-bottom: 1px solid #e1e9e4;
+}
+
+#matchDetailScreen .match-detail-party-player:last-child {
+  border-bottom: 0;
+}
+
+#matchDetailScreen .match-detail-party-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 8px 9px;
+  border-right: 1px solid #e1e9e4;
+  background: #fbfdfc;
+}
+
+#matchDetailScreen .match-detail-party-name small {
+  margin-bottom: 3px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+#matchDetailScreen .match-detail-party-name strong {
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 850;
+  text-overflow: ellipsis;
+}
+
+#matchDetailScreen .match-detail-party-stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  min-width: 0;
+}
+
+#matchDetailScreen .match-detail-party-stats span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 7px 2px;
+  border-right: 1px solid #e5ece8;
+  text-align: center;
+}
+
+#matchDetailScreen .match-detail-party-stats span:last-child {
+  border-right: 0;
+}
+
+#matchDetailScreen .match-detail-party-stats small {
+  margin-bottom: 4px;
+  color: #718078;
+  font-size: 7px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+#matchDetailScreen .match-detail-party-stats b {
+  color: var(--text);
+  font-size: 11px;
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+#matchDetailScreen .match-detail-party-ptn {
+  background: #f5faf7;
+}
+
+#matchDetailScreen .match-detail-party-ptn b {
+  color: var(--green-dark);
+}
+
+@media (max-width: 390px) {
+  #matchDetailScreen .match-detail-party-player {
+    grid-template-columns: minmax(92px, 1.05fr) minmax(0, 1.95fr);
+  }
+
+  #matchDetailScreen .match-detail-party-name {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  #matchDetailScreen .match-detail-party-name strong {
+    font-size: 11px;
+  }
+
+  #matchDetailScreen .match-detail-party-stats small {
+    font-size: 6px;
+  }
+
+  #matchDetailScreen .match-detail-party-stats b {
+    font-size: 10px;
+  }
+}
+
+
+/* =========================================================
+   NAVIGATIE - CONSISTENTE LIJNICONEN
+   ========================================================= */
+
+.bottom-nav .nav-icon {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  margin: 0 auto 3px;
+  place-items: center;
+}
+
+.bottom-nav .nav-icon svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bottom-nav .nav-item > span:last-child {
+  font-size: 8px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   HOME - KLEINE TEKST BETER LEESBAAR
+   Volgorde en inhoud blijven ongewijzigd
+   ========================================================= */
+
+#homeScreen .match-title .card-label {
+  font-size: 10px;
+}
+
+#homeScreen .match-date {
+  font-size: 11px;
+  line-height: 1.35;
+  font-weight: 850;
+}
+
+#homeScreen .match-teams {
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+#homeScreen .match-teams span {
+  font-size: 9px;
+  font-weight: 800;
+}
+
+#homeScreen .match-meta {
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+
+/* =========================================================
+   PERSOONLIJKE STATISTIEKEN - NIEUWE OPMAAK
+   ========================================================= */
+
+#playerStatsScreen .player-stats-mode {
+  position: sticky;
+  top: 6px;
+  z-index: 5;
+  margin: 4px 0 14px;
+  padding: 4px;
+  border: 1px solid #d8e5de;
+  border-radius: 14px;
+  background: rgba(244, 248, 245, .96);
+  box-shadow: 0 5px 16px rgba(17, 55, 37, .07);
+  backdrop-filter: blur(8px);
+}
+
+#playerStatsScreen .player-stats-mode .segment {
+  min-height: 38px;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+#playerStatsScreen .player-stats-section-heading {
+  margin-top: 18px;
+  margin-bottom: 9px;
+}
+
+#playerStatsScreen .player-stats-section-heading h3 {
+  margin-top: 2px;
+  font-size: 17px;
+}
+
+#playerStatsScreen .player-stats-overview-card,
+#playerStatsScreen .player-stats-alltime-intro {
+  margin-bottom: 4px;
+}
+
+#playerStatsScreen .player-stats-season-summary {
+  margin-top: 11px;
+}
+
+#playerStatsScreen .player-stats-chart-card {
+  overflow: hidden;
+  padding: 10px 6px 4px;
+}
+
+#playerStatsScreen .player-stats-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+#playerStatsScreen .player-stats-chart-grid {
+  stroke: #dbe6e0;
+  stroke-width: 1;
+}
+
+#playerStatsScreen .player-stats-chart-line {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#playerStatsScreen .player-stats-chart-point {
+  fill: #ffffff;
+  stroke: var(--green);
+  stroke-width: 2.4;
+}
+
+#playerStatsScreen .player-stats-chart-axis {
+  fill: #718078;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+#playerStatsScreen .player-stats-chart-value {
+  fill: var(--green-dark);
+  font-size: 8px;
+  font-weight: 900;
+}
+
+#playerStatsScreen .player-stats-chart-date {
+  fill: #5f6f67;
+  font-size: 7px;
+  font-weight: 800;
+}
+
+#playerStatsScreen #playerStatsMatches {
+  display: grid;
+  gap: 10px;
+}
+
+#playerStatsScreen .player-stats-match-compact {
+  margin: 0;
+  padding: 12px;
+}
+
+#playerStatsScreen .player-stats-match-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+#playerStatsScreen .player-stats-match-head > div {
+  min-width: 0;
+}
+
+#playerStatsScreen .player-stats-match-date {
+  margin-bottom: 4px;
+  color: #607168;
+  font-size: 10px;
+  line-height: 1.25;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+#playerStatsScreen .player-stats-match-head h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+#playerStatsScreen .player-stats-result {
+  flex: 0 0 auto;
+  padding: 5px 7px;
+  border-radius: 8px;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+#playerStatsScreen .player-stats-result.win {
+  background: #e6f6ed;
+  color: #08783f;
+}
+
+#playerStatsScreen .player-stats-result.draw {
+  background: #f3f1e8;
+  color: #756520;
+}
+
+#playerStatsScreen .player-stats-result.loss {
+  background: #f8eaea;
+  color: #a33d3d;
+}
+
+#playerStatsScreen .player-stats-match-context {
+  margin-bottom: 9px;
+  color: #617169;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+#playerStatsScreen .player-stats-match-context strong {
+  color: var(--green-dark);
+}
+
+#playerStatsScreen .player-stats-match-summary {
+  gap: 6px;
+}
+
+#playerStatsScreen .player-stats-match-summary > div {
+  min-height: 53px;
+  padding: 7px 4px;
+}
+
+#playerStatsScreen .player-stats-match-summary span {
+  font-size: 7px;
+}
+
+#playerStatsScreen .player-stats-match-summary strong {
+  font-size: 13px;
+}
+
+#playerStatsScreen .player-stats-alltime-intro h3 {
+  margin: 4px 0 5px;
+}
+
+@media (max-width: 390px) {
+  #playerStatsScreen .player-stats-match-head h3 {
+    font-size: 14px;
+  }
+
+  #playerStatsScreen .player-stats-match-date {
+    font-size: 9px;
+  }
+
+  #homeScreen .match-date {
+    font-size: 10px;
+  }
+}
+
+
+/* =========================================================
+   FINALE COMPACTHEID PERSOONLIJKE MATCHEN + HOME LEESBAARHEID
+   ========================================================= */
+
+/* Persoonlijke statistieken: gespeelde partijen compacter */
+#playerStatsScreen #playerStatsMatches {
+  gap: 7px;
+}
+
+#playerStatsScreen .player-stats-match-compact {
+  padding: 9px 10px;
+}
+
+#playerStatsScreen .player-stats-match-head {
+  margin-bottom: 4px;
+}
+
+#playerStatsScreen .player-stats-match-date {
+  margin-bottom: 2px;
+  font-size: 9px;
+}
+
+#playerStatsScreen .player-stats-match-head h3 {
+  font-size: 14px;
+}
+
+#playerStatsScreen .player-stats-result {
+  padding: 4px 6px;
+  font-size: 9px;
+}
+
+#playerStatsScreen .player-stats-match-context {
+  margin-bottom: 6px;
+  font-size: 9px;
+  line-height: 1.25;
+}
+
+#playerStatsScreen .player-stats-match-summary {
+  gap: 5px;
+  margin-top: 0;
+}
+
+#playerStatsScreen .player-stats-match-summary > div {
+  min-height: 42px;
+  padding: 5px 3px;
+  border-radius: 10px;
+}
+
+#playerStatsScreen .player-stats-match-summary span {
+  margin-bottom: 3px;
+  font-size: 6px;
+}
+
+#playerStatsScreen .player-stats-match-summary strong {
+  font-size: 12px;
+}
+
+/* Home: datum, dag, TEGEN en locatie duidelijk beter leesbaar */
+#homeScreen .match-date {
+  margin-bottom: 9px;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 850;
+}
+
+#homeScreen .match-teams strong {
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+#homeScreen .match-teams span {
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 850;
+}
+
+#homeScreen .match-meta {
+  margin-top: 9px;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 650;
+}
+
+@media (max-width: 390px) {
+  #playerStatsScreen .player-stats-match-compact {
+    padding: 8px 9px;
+  }
+
+  #playerStatsScreen .player-stats-match-summary > div {
+    min-height: 40px;
+  }
+
+  #homeScreen .match-date {
+    font-size: 12px;
+  }
+
+  #homeScreen .match-meta {
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   PERSOONLIJKE STATISTIEKEN - COMPACTE TABELRIJEN
+   Tegenstander + alle cijfers naast elkaar
+   ========================================================= */
+
+#playerStatsScreen #playerStatsMatches {
+  display: grid;
+  gap: 7px;
+}
+
+#playerStatsScreen .player-stats-table-match {
+  overflow: hidden;
+  border: 1px solid #d9e5de;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(17, 55, 37, .04);
+}
+
+#playerStatsScreen .player-stats-table-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 27px;
+  padding: 5px 7px;
+  border-bottom: 1px solid #dfe8e3;
+  background: #edf5f1;
+}
+
+#playerStatsScreen .player-stats-table-meta > span {
+  color: #53665c;
+  font-size: 8px;
+  line-height: 1.15;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+#playerStatsScreen .player-stats-table-meta .player-stats-result {
+  padding: 3px 5px;
+  font-size: 8px;
+}
+
+#playerStatsScreen .player-stats-table-row {
+  display: grid;
+  grid-template-columns: minmax(82px, 1.65fr) repeat(6, minmax(30px, .72fr));
+  align-items: stretch;
+  min-height: 47px;
+}
+
+#playerStatsScreen .player-stats-table-opponent,
+#playerStatsScreen .player-stats-table-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 5px 3px;
+  border-right: 1px solid #e5ece8;
+}
+
+#playerStatsScreen .player-stats-table-opponent {
+  align-items: flex-start;
+  padding-left: 7px;
+  padding-right: 5px;
+  background: #fbfdfc;
+}
+
+#playerStatsScreen .player-stats-table-stat {
+  align-items: center;
+  text-align: center;
+}
+
+#playerStatsScreen .player-stats-table-row > :last-child {
+  border-right: 0;
+}
+
+#playerStatsScreen .player-stats-table-opponent small,
+#playerStatsScreen .player-stats-table-stat small {
+  margin-bottom: 3px;
+  color: #718078;
+  font-size: 6px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+#playerStatsScreen .player-stats-table-opponent strong {
+  width: 100%;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 9px;
+  line-height: 1.15;
+  font-weight: 900;
+  text-overflow: ellipsis;
+}
+
+#playerStatsScreen .player-stats-table-stat strong {
+  color: var(--green-dark);
+  font-size: 9px;
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+@media (max-width: 390px) {
+  #playerStatsScreen .player-stats-table-row {
+    grid-template-columns: minmax(76px, 1.55fr) repeat(6, minmax(28px, .72fr));
+  }
+
+  #playerStatsScreen .player-stats-table-opponent {
+    padding-left: 6px;
+  }
+
+  #playerStatsScreen .player-stats-table-opponent strong,
+  #playerStatsScreen .player-stats-table-stat strong {
+    font-size: 8px;
+  }
+
+  #playerStatsScreen .player-stats-table-opponent small,
+  #playerStatsScreen .player-stats-table-stat small {
+    font-size: 5.5px;
+  }
+}
+
+
+/* =========================================================
+   PERSOONLIJKE MATCHEN - PLOEG / TEGENSTANDER / BREDE STATS
+   ========================================================= */
+
+#playerStatsScreen .player-stats-opponent-block {
+  padding: 7px 9px 6px;
+  border-bottom: 1px solid #e2ebe6;
+  background: #fbfdfc;
+}
+
+#playerStatsScreen .player-stats-opponent-team {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 900;
+}
+
+#playerStatsScreen .player-stats-opponent-name {
+  display: block;
+  color: #66776e;
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 750;
+}
+
+#playerStatsScreen .player-stats-wide-stats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+#playerStatsScreen .player-stats-wide-stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 45px;
+  padding: 5px 2px;
+  border-right: 1px solid #e2ebe6;
+  text-align: center;
+}
+
+#playerStatsScreen .player-stats-wide-stats > div:last-child {
+  border-right: 0;
+}
+
+#playerStatsScreen .player-stats-wide-stats small {
+  margin-bottom: 4px;
+  color: #718078;
+  font-size: 7px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+#playerStatsScreen .player-stats-wide-stats strong {
+  color: var(--green-dark);
+  font-size: 12px;
+  line-height: 1.05;
+  font-weight: 900;
+}
+
+#playerStatsScreen .player-stats-wide-ptn {
+  background: #f2f8f4;
+}
+
+@media (max-width: 390px) {
+  #playerStatsScreen .player-stats-opponent-team {
+    font-size: 11px;
+  }
+
+  #playerStatsScreen .player-stats-opponent-name {
+    font-size: 8.5px;
+  }
+
+  #playerStatsScreen .player-stats-wide-stats > div {
+    min-height: 43px;
+  }
+
+  #playerStatsScreen .player-stats-wide-stats small {
+    font-size: 6.5px;
+  }
+
+  #playerStatsScreen .player-stats-wide-stats strong {
+    font-size: 11px;
+  }
+}
+
+
+/* =========================================================
+   LAATSTE LEESBAARHEID + WINST/VERLIES SPEELDAG
+   ========================================================= */
+
+/* Naam van de tegenstander onder de ploegnaam duidelijk groter */
+#playerStatsScreen .player-stats-opponent-name {
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+/* Individuele partij op Speeldag: subtiele resultaatkleur */
+#matchdayScreen .matchday-player.matchday-player-win {
+  background: #edf8f1;
+}
+
+#matchdayScreen .matchday-player.matchday-player-loss {
+  background: #fdf0f0;
+}
+
+@media (max-width: 390px) {
+  #playerStatsScreen .player-stats-opponent-name {
+    font-size: 10.5px;
   }
 }
