@@ -1,7 +1,7 @@
 const API_URL = 'https://adl2000-api.nicolasmintjens.workers.dev';
 const STORAGE_KEY = 'adl2000Player';
 
-const APP_VERSION = '7';
+const APP_VERSION = '8';
 const APP_VERSION_STORAGE_KEY = 'adl2000AppVersion';
 
 const screens = {
@@ -17,7 +17,8 @@ const screens = {
   playerStats: document.getElementById('playerStatsScreen'),
   matchDetail: document.getElementById('matchDetailScreen'),
   teamDetail: document.getElementById('teamDetailScreen'),
-  venues: document.getElementById('venuesScreen')
+  venues: document.getElementById('venuesScreen'),
+  liveScores: document.getElementById('liveScoresScreen')
 };
 
 const bottomNav = document.getElementById('bottomNav');
@@ -53,6 +54,7 @@ function init() {
   bindMatchdayNavigation();
   bindStandMode();
   bindMatchDetail();
+  bindLiveScores();
   registerServiceWorker();
   showAppUpdateMessage();
 
@@ -81,7 +83,8 @@ function showOnly(name) {
     'records',
     'playerStats',
     'matchDetail',
-    'teamDetail'
+    'teamDetail',
+    'liveScores'
   ].includes(name);
 }
 
@@ -5257,12 +5260,14 @@ function showAppUpdateMessage() {
   );
 
   alert(
-    "Wat is er nieuw?\n\n" +
-    "• Speeldag volgt nu automatisch de huidige kalenderweek\n" +
-    "• Stand houdt rekening met alle reeds gespeelde wedstrijden\n" +
-    "• Navigatie op Android verbeterd\n" +
-    "• Diverse verbeteringen en optimalisaties"
-  );
+  "🎉 Wat is er nieuw?\n\n" +
+  "• 📺 Hyperscore toegevoegd met live scores per lokaal\n" +
+  "• 🗓️ Speeldag volgt automatisch de huidige kalenderweek\n" +
+  "• 🏆 Ploegstand houdt nu ook rekening met vooruitgespeelde wedstrijden\n" +
+  "• 📊 Persoonlijke statistieken verder verbeterd\n" +
+  "• 🎱 Wedstrijd- en speeldaginformatie duidelijker weergegeven\n" +
+  "• 📱 Diverse verbeteringen voor mobiel gebruik"
+);
 }
 
 
@@ -5318,3 +5323,35 @@ function registerServiceWorker() {
   );
 }
     
+function bindLiveScores() {
+  const liveScoresButton =
+    document.getElementById('liveScoresButton');
+
+  const liveScoresBackButton =
+    document.getElementById('liveScoresBackButton');
+
+  const hyperscoreClubButtons =
+    document.querySelectorAll('.hyperscore-club-button');
+
+  liveScoresButton.addEventListener('click', () => {
+    showOnly('liveScores');
+    window.scrollTo(0, 0);
+  });
+
+  liveScoresBackButton.addEventListener('click', () => {
+    showMainScreen('more');
+  });
+
+  hyperscoreClubButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const clubId =
+        button.dataset.clubId;
+
+      window.open(
+        `https://opdemeir-tornooi-webapp.appspot.com/online-scores.htm?club=${clubId}`,
+        '_blank',
+        'noopener,noreferrer'
+      );
+    });
+  });
+}
