@@ -1,4 +1,4 @@
-const CACHE_NAME = 'adl2000-v7';
+const CACHE_NAME = 'adl2000-v8';
 
 const APP_FILES = [
   './',
