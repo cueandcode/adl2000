@@ -1499,38 +1499,148 @@ function bindMatchdayNavigation() {
 }
 
 async function findLatestPlayedMatchdayWeek() {
-  const overview = await getOverview();
-  const startWeek = Math.min(
-    Math.max(Number(overview.actueleSpeelweek) || 1, 1),
-    30
-  );
+  /*
+   * Speeldag volgt de huidige kalenderweek:
+   * maandag 00:00 t/m zondag 23:59.
+   *
+   * Staat er in die week een gewone competitiewedstrijd,
+   * dan tonen we de speelweek waartoe die wedstrijd behoort,
+   * ongeacht of de eigen ploeg al gespeeld heeft.
+   */
+  const afdeling =
+    currentPlayer.afdeling;
 
-  for (let week = startWeek; week >= 1; week -= 1) {
-    try {
-      const response = await fetch(
-        `${API_URL}/?type=uitslagen` +
-        `&afdeling=${encodeURIComponent(currentPlayer.afdeling)}` +
-        `&speelweek=${encodeURIComponent(week)}`
-      );
+  let calendar =
+    calendarCache[afdeling];
 
-      if (!response.ok) {
-        continue;
-      }
+  if (!calendar) {
+    const response = await fetch(
+      `${API_URL}/?type=kalender` +
+      `&afdeling=${encodeURIComponent(afdeling)}`
+    );
 
-      const data = await response.json();
-      const results = Array.isArray(data.uitslagen)
-        ? data.uitslagen
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+
+    const data =
+      await response.json();
+
+    calendar =
+      Array.isArray(data.kalender)
+        ? data.kalender
         : [];
 
-      if (results.length) {
-        return week;
-      }
-    } catch {
-      // Probeer de vorige speelweek.
-    }
+    calendarCache[afdeling] =
+      calendar;
   }
 
-  return startWeek;
+  const today = new Date();
+
+  today.setHours(
+    12,
+    0,
+    0,
+    0
+  );
+
+  /*
+   * JavaScript: zondag = 0, maandag = 1.
+   * Hiermee bepalen we de maandag van de huidige week.
+   */
+  const dayOfWeek =
+    today.getDay();
+
+  const daysSinceMonday =
+    dayOfWeek === 0
+      ? 6
+      : dayOfWeek - 1;
+
+  const monday =
+    new Date(today);
+
+  monday.setDate(
+    today.getDate() - daysSinceMonday
+  );
+
+  monday.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+  const sunday =
+    new Date(monday);
+
+  sunday.setDate(
+    monday.getDate() + 6
+  );
+
+  sunday.setHours(
+    23,
+    59,
+    59,
+    999
+  );
+
+  const matchesThisWeek =
+    calendar.filter(match => {
+      if (!match.datum) {
+        return false;
+      }
+
+      const date =
+        new Date(
+          `${match.datum}T12:00:00`
+        );
+
+      return (
+        !Number.isNaN(date.getTime()) &&
+        date >= monday &&
+        date <= sunday
+      );
+    });
+
+  const weeksThisWeek =
+    matchesThisWeek
+      .map(match => Number(match.speelweek))
+      .filter(Number.isFinite);
+
+  if (weeksThisWeek.length) {
+    return Math.max(...weeksThisWeek);
+  }
+
+  /*
+   * Geen wedstrijd in de huidige kalenderweek:
+   * val terug op de meest recente speelweek waarvan de
+   * wedstrijddatum vóór vandaag ligt.
+   */
+  const previousWeeks =
+    calendar
+      .filter(match => {
+        if (!match.datum) {
+          return false;
+        }
+
+        const date =
+          new Date(
+            `${match.datum}T12:00:00`
+          );
+
+        return (
+          !Number.isNaN(date.getTime()) &&
+          date < monday
+        );
+      })
+      .map(match => Number(match.speelweek))
+      .filter(Number.isFinite);
+
+  if (previousWeeks.length) {
+    return Math.max(...previousWeeks);
+  }
+
+  return 1;
 }
 
 async function loadMatchday(requestedWeek = null) {
@@ -5148,10 +5258,10 @@ function showAppUpdateMessage() {
 
   alert(
     "Wat is er nieuw?\n\n" +
-    "• Persoonlijke statistieken verder verbeterd\n" +
-    "• Speeldag toont winst en verlies duidelijker\n" +
-    "• Home en wedstrijdinformatie beter leesbaar\n" +
-    "• Updates van de app worden voortaan automatisch opgehaald"
+    "• Speeldag volgt nu automatisch de huidige kalenderweek\n" +
+    "• Stand houdt rekening met alle reeds gespeelde wedstrijden\n" +
+    "• Navigatie op Android verbeterd\n" +
+    "• Diverse verbeteringen en optimalisaties"
   );
 }
 
