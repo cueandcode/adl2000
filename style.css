@@ -5864,3 +5864,67 @@ button {
     font-size: 10.5px;
   }
 }
+
+/* =========================================================
+   BOTTOM NAV - 6 KNOPPEN + ROBUUSTE SVG ICONEN (v7)
+   ========================================================= */
+
+.bottom-nav {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.bottom-nav .nav-item {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+  padding: 5px 1px;
+  text-align: center;
+}
+
+.bottom-nav .nav-icon {
+  display: flex;
+  flex: 0 0 23px;
+  width: 23px;
+  height: 23px;
+  min-width: 23px;
+  min-height: 23px;
+  max-width: 23px;
+  max-height: 23px;
+  margin: 0 auto 3px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.bottom-nav .nav-icon svg {
+  display: block;
+  flex: 0 0 21px;
+  width: 21px !important;
+  height: 21px !important;
+  min-width: 21px;
+  min-height: 21px;
+  max-width: 21px !important;
+  max-height: 21px !important;
+  overflow: hidden;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.bottom-nav .nav-item > span:last-child {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 8px;
+  line-height: 1.15;
+  font-weight: 800;
+  text-align: center;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+

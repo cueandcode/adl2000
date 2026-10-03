@@ -1,6 +1,9 @@
 const API_URL = 'https://adl2000-api.nicolasmintjens.workers.dev';
 const STORAGE_KEY = 'adl2000Player';
 
+const APP_VERSION = '7';
+const APP_VERSION_STORAGE_KEY = 'adl2000AppVersion';
+
 const screens = {
   welcome: document.getElementById('welcomeScreen'),
   select: document.getElementById('playerSelectScreen'),
@@ -51,6 +54,7 @@ function init() {
   bindStandMode();
   bindMatchDetail();
   registerServiceWorker();
+  showAppUpdateMessage();
 
   if (currentPlayer) {
     fillPlayerData();
@@ -5129,21 +5133,78 @@ function renderVenues(container, ploegen) {
   showDivision('A');
 }
 
-function registerServiceWorker() {
-  if ('serviceWorker' in navigator) {
-    window.addEventListener(
-      'load',
-      () => {
-        navigator.serviceWorker
-          .register('./sw.js')
-          .catch(error => {
-            console.error(
-              'Service worker kon niet geregistreerd worden:',
-              error
-            );
-          });
-      }
-    );
+function showAppUpdateMessage() {
+  const lastSeenVersion =
+    localStorage.getItem(APP_VERSION_STORAGE_KEY);
+
+  if (lastSeenVersion === APP_VERSION) {
+    return;
   }
+
+  localStorage.setItem(
+    APP_VERSION_STORAGE_KEY,
+    APP_VERSION
+  );
+
+  alert(
+    "Wat is er nieuw?\n\n" +
+    "• Persoonlijke statistieken verder verbeterd\n" +
+    "• Speeldag toont winst en verlies duidelijker\n" +
+    "• Home en wedstrijdinformatie beter leesbaar\n" +
+    "• Updates van de app worden voortaan automatisch opgehaald"
+  );
+}
+
+
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    return;
+  }
+
+  window.addEventListener(
+    'load',
+    async () => {
+      try {
+        const registration =
+          await navigator.serviceWorker.register(
+            './sw.js',
+            {
+              updateViaCache: 'none'
+            }
+          );
+
+        /*
+         * Vraag bij iedere echte paginalaad expliciet of er
+         * een nieuwere service worker beschikbaar is.
+         */
+        await registration.update();
+
+        /*
+         * Als een nieuwe worker de controle overneemt,
+         * herladen we één keer zodat index/app/style meteen
+         * uit de nieuwe versie komen.
+         */
+        let refreshing = false;
+
+        navigator.serviceWorker.addEventListener(
+          'controllerchange',
+          () => {
+            if (refreshing) {
+              return;
+            }
+
+            refreshing = true;
+            window.location.reload();
+          }
+        );
+
+      } catch (error) {
+        console.error(
+          'Service worker kon niet geregistreerd of bijgewerkt worden:',
+          error
+        );
+      }
+    }
+  );
 }
     
