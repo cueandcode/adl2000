@@ -6069,3 +6069,29 @@ button {
   font-size: 13px;
   padding: 4px 1px;
 }
+
+
+/* iPhone: schaal de volledige Speeldag-tabel, zonder kolommen af te kappen. */
+#matchdayScreen .matchday-table-scroll {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+#matchdayScreen .matchday-compact-table {
+  width: 1020px !important;
+  min-width: 1020px !important;
+  max-width: none !important;
+  margin: 0;
+  table-layout: fixed;
+  transform-origin: top left;
+}
+#matchdayScreen .matchday-compact-table th,
+#matchdayScreen .matchday-compact-table td {
+  text-overflow: clip !important;
+}
+#matchdayScreen .matchday-compact-table .matchday-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip !important;
+}

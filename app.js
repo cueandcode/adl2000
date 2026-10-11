@@ -1878,13 +1878,26 @@ function pasMatchdayTabelAanSchermAan(card) {
   const container = card.querySelector('.matchday-table-scroll');
   const tabel = container?.querySelector('.matchday-compact-table');
   if (!container || !tabel) return;
+
   const pasAan = () => {
-    const beschikbareBreedte = container.clientWidth;
-    if (!beschikbareBreedte) return;
+    const breedte = container.clientWidth;
+    if (!breedte) return;
+
+    // Transform schaalt de hele tabel, niet de afzonderlijke kolommen.
+    // Werkt ook in Safari op iPhone.
     const tabelBreedte = 1020;
-    const schaal = Math.min(1, beschikbareBreedte / tabelBreedte);
-    tabel.style.zoom = String(schaal);
+    const schaal = Math.min(1, breedte / tabelBreedte);
+
+    tabel.style.zoom = '';
+    tabel.style.width = `${tabelBreedte}px`;
+    tabel.style.minWidth = `${tabelBreedte}px`;
+    tabel.style.transformOrigin = 'top left';
+    tabel.style.transform = `scale(${schaal})`;
+
+    // Transform verkleint de visuele hoogte niet in de documentflow.
+    container.style.height = `${Math.ceil(tabel.offsetHeight * schaal) + 1}px`;
   };
+
   pasAan();
   if (typeof ResizeObserver !== 'undefined') {
     const observer = new ResizeObserver(pasAan);
