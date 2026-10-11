@@ -6095,3 +6095,51 @@ button {
   white-space: nowrap;
   text-overflow: clip !important;
 }
+
+
+/* =========================================================
+   SPEELDAG - GROTERE, LEESBARE TABEL OP GSM
+   Alleen het Speeldag-scherm. De BRT-kolom blijft smal.
+   ========================================================= */
+#matchdayScreen .matchday-compact-table {
+  width: 744px !important;
+  min-width: 744px !important;
+  max-width: 744px !important;
+  font-size: 13px;
+}
+#matchdayScreen .matchday-col-hr   { width: 24px; }
+#matchdayScreen .matchday-col-moy  { width: 44px; }
+#matchdayScreen .matchday-col-name { width: 185px; }
+#matchdayScreen .matchday-col-tsp  { width: 30px; }
+#matchdayScreen .matchday-col-ptn  { width: 38px; }
+#matchdayScreen .matchday-col-gsp  { width: 40px; }
+#matchdayScreen .matchday-col-brt  { width: 22px; }
+#matchdayScreen .matchday-compact-table th,
+#matchdayScreen .matchday-compact-table td {
+  padding: 7px 2px;
+  line-height: 1.2;
+}
+#matchdayScreen .matchday-compact-table .matchday-name {
+  padding-left: 5px;
+  font-size: 15px;
+  font-weight: 750;
+}
+#matchdayScreen .matchday-compact-table .matchday-brt-cell {
+  padding-left: 0;
+  padding-right: 0;
+  font-size: 11px;
+  text-align: center;
+  vertical-align: middle;
+}
+#matchdayScreen .matchday-table-teams th {
+  font-size: 16px;
+  padding: 9px 4px;
+}
+#matchdayScreen .matchday-table-teams .matchday-team-score {
+  font-size: 13px;
+  padding: 9px 0;
+}
+#matchdayScreen .matchday-table-labels th {
+  font-size: 11px;
+  padding: 5px 1px;
+}

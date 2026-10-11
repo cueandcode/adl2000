@@ -1885,7 +1885,7 @@ function pasMatchdayTabelAanSchermAan(card) {
 
     // Transform schaalt de hele tabel, niet de afzonderlijke kolommen.
     // Werkt ook in Safari op iPhone.
-    const tabelBreedte = 1020;
+    const tabelBreedte = 744;
     const schaal = Math.min(1, breedte / tabelBreedte);
 
     tabel.style.zoom = '';
