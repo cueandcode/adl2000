@@ -5928,3 +5928,114 @@ button {
   white-space: nowrap;
 }
 
+/* Speeldag - gelijkspel */
+
+#matchdayScreen .matchday-player-draw {
+  background: #fff0d9;
+}
+/* SPEELDAG: compacte ADL2000-tabel, alleen dit scherm */
+#matchdayScreen .matchday-division-label { display:block; font-size:12px; font-weight:800; margin:0 0 5px; color:var(--green-dark); }
+#matchdayScreen .matchday-division-select { display:block; width:100%; padding:10px 12px; margin-bottom:14px; border:1px solid #cfe0d7; border-radius:10px; background:#fff; color:var(--green-dark); font-size:15px; font-weight:800; }
+#matchdayScreen .matchday-table-card { overflow:hidden; border-radius:12px; }
+#matchdayScreen .matchday-table-scroll { width:100%; overflow-x:auto; overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch; }
+#matchdayScreen .matchday-compact-table { border-collapse:collapse; table-layout:fixed; width:1020px; font-family:Arial,Helvetica,sans-serif; font-size:11px; color:#17231d; }
+#matchdayScreen .matchday-col-hr { width:28px; }
+#matchdayScreen .matchday-col-moy { width:50px; }
+#matchdayScreen .matchday-col-name { width:240px; }
+#matchdayScreen .matchday-col-tsp { width:34px; }
+#matchdayScreen .matchday-col-ptn { width:38px; }
+#matchdayScreen .matchday-col-gsp { width:37px; }
+#matchdayScreen .matchday-col-brt { width:46px; }
+#matchdayScreen .matchday-compact-table th,
+#matchdayScreen .matchday-compact-table td { border:1px solid #d3d9d5; padding:4px 3px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#matchdayScreen .matchday-compact-table .matchday-name { text-align:left; font-weight:600; padding-left:5px; }
+#matchdayScreen .matchday-table-teams th { background:#f6e447; color:#161b14; font-size:12px; font-weight:900; border-color:#e4d133; padding:6px 7px; }
+#matchdayScreen .matchday-table-teams .matchday-team-home { text-align:left; }
+#matchdayScreen .matchday-table-teams .matchday-team-away { text-align:right; }
+#matchdayScreen .matchday-table-teams .matchday-team-score { font-size:14px; background:#f8ed85; }
+#matchdayScreen .matchday-table-teams .matchday-match-id { background:#e5d43c; }
+#matchdayScreen .matchday-table-labels th { background:#e7e9e7; color:#657168; font-size:9px; font-weight:900; padding:3px 1px; }
+#matchdayScreen .matchday-compact-table tbody tr:nth-child(even) td { background:#f0f2f1; }
+#matchdayScreen .matchday-compact-table tbody .matchday-brt-cell { background:#f6f7f6; font-size:10px; color:#3f4c44; }
+#matchdayScreen .matchday-compact-table tbody .matchday-cell-win { background:#c8f0d8 !important; color:#07512d; font-weight:900; }
+#matchdayScreen .matchday-compact-table tbody .matchday-cell-loss { background:#f8d7d7 !important; color:#922424; font-weight:900; }
+#matchdayScreen .matchday-compact-table tbody .matchday-cell-draw { background:#fff0d9 !important; color:#7e510f; font-weight:900; }
+#matchdayScreen .matchday-detail-link { width:100%; padding:9px; border:0; border-top:1px solid #dfe7e2; background:#f6faf7; color:var(--green-dark); font-size:11px; font-weight:800; cursor:pointer; }
+
+
+/* Speeldag: afdelingen naast elkaar */
+#matchdayScreen .matchday-division-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 0 14px;
+}
+#matchdayScreen .matchday-division-tabs button {
+  min-width: 0;
+  padding: 10px 2px;
+  border: 1px solid #cfe0d7;
+  border-radius: 9px;
+  background: #fff;
+  color: #04532d;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+#matchdayScreen .matchday-division-tabs button.active {
+  background: #08783f;
+  border-color: #08783f;
+  color: #fff;
+}
+/* De ploegtotalen mogen nooit worden afgekapt met puntjes. */
+#matchdayScreen .matchday-compact-table .matchday-team-score {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  padding: 6px 1px;
+}
+#matchdayScreen .matchday-col-gsp { width: 57px; }
+#matchdayScreen .matchday-col-brt { width: 30px; }
+
+/* Speeldag: toon de VOLLEDIGE tabel op gsm in plaats van horizontaal af te snijden. */
+#matchdayScreen .matchday-table-scroll {
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+#matchdayScreen .matchday-compact-table {
+  min-width: 1020px;
+  max-width: none;
+}
+#matchdayScreen .matchday-compact-table .matchday-team-score {
+  overflow: hidden;
+  text-overflow: clip;
+  font-size: 13px;
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+
+/* Andere reeksen: twee afzonderlijke, herkenbare knoppen */
+.series-detail .series-actions {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  gap: 10px;
+}
+.series-detail .series-actions .primary-button,
+.series-detail .series-actions .secondary-button {
+  border: 1px solid #cbded3;
+  border-radius: 11px;
+  min-width: 0;
+}
+.series-detail .series-actions .secondary-button {
+  background: #f5f9f7;
+  color: #04532d;
+}
+.series-detail .series-actions .primary-button {
+  background: #08783f;
+  border-color: #08783f;
+  color: #fff;
+}

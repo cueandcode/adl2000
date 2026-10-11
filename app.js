@@ -30,6 +30,7 @@ let calendarCache = {};
 let calendarMode = 'team';
 let calendarStatusFilter = 'all';
 let matchdayWeek = null;
+let matchdayDivision = null;
 let matchdayLatestWeek = null;
 let selectedSeries = null;
 let standMode = 'ploegen';
@@ -52,6 +53,7 @@ function init() {
   bindMoreMenu();
   bindCalendarMode();
   bindMatchdayNavigation();
+  bindMatchdayDivision();
   bindStandMode();
   bindMatchDetail();
   bindLiveScores();
@@ -297,6 +299,8 @@ function selectPlayer(player) {
 
   overviewCache = {};
   calendarCache = {};
+  matchdayDivision = null;
+  matchdayLatestWeek = null;
   standMode = 'ploegen';
 
   fillPlayerData();
@@ -1466,6 +1470,37 @@ function bindCalendarMode() {
 
 
 
+function bindMatchdayDivision() {
+  const container = document.getElementById('matchdayDivision');
+  if (!container) return;
+
+  container.querySelectorAll('[data-matchday-division]').forEach(button => {
+    button.addEventListener('click', async () => {
+      const gekozen = button.dataset.matchdayDivision;
+      if (gekozen === matchdayDivision) return;
+      matchdayDivision = gekozen;
+      matchdayLatestWeek = null;
+      matchdayWeek = null;
+      renderMatchdayDivision();
+      await loadMatchday();
+    });
+  });
+}
+
+function renderMatchdayDivision() {
+  const container = document.getElementById('matchdayDivision');
+  const gekozen = matchdayDivision || currentPlayer.afdeling;
+  if (container) {
+    container.querySelectorAll('[data-matchday-division]').forEach(button => {
+      const actief = button.dataset.matchdayDivision === gekozen;
+      button.classList.toggle('active', actief);
+      button.setAttribute('aria-pressed', String(actief));
+    });
+  }
+  const description = document.getElementById('matchdayDescription');
+  if (description) description.textContent = `Afdeling ${gekozen}`;
+}
+
 function bindMatchdayNavigation() {
   const previousButton =
     document.getElementById('matchdayPreviousWeek');
@@ -1501,7 +1536,7 @@ function bindMatchdayNavigation() {
   }
 }
 
-async function findLatestPlayedMatchdayWeek() {
+async function findLatestPlayedMatchdayWeek(afdeling = matchdayDivision || currentPlayer.afdeling) {
   /*
    * Speeldag volgt de huidige kalenderweek:
    * maandag 00:00 t/m zondag 23:59.
@@ -1510,9 +1545,6 @@ async function findLatestPlayedMatchdayWeek() {
    * dan tonen we de speelweek waartoe die wedstrijd behoort,
    * ongeacht of de eigen ploeg al gespeeld heeft.
    */
-  const afdeling =
-    currentPlayer.afdeling;
-
   let calendar =
     calendarCache[afdeling];
 
@@ -1647,6 +1679,10 @@ async function findLatestPlayedMatchdayWeek() {
 }
 
 async function loadMatchday(requestedWeek = null) {
+  if (!matchdayDivision) {
+    matchdayDivision = currentPlayer.afdeling;
+  }
+  renderMatchdayDivision();
   const container =
     document.getElementById('matchdayContent');
   const title =
@@ -1669,7 +1705,7 @@ async function loadMatchday(requestedWeek = null) {
   try {
     if (!Number.isFinite(matchdayLatestWeek)) {
       matchdayLatestWeek =
-        await findLatestPlayedMatchdayWeek();
+        await findLatestPlayedMatchdayWeek(matchdayDivision);
     }
 
     if (requestedWeek === null) {
@@ -1694,7 +1730,7 @@ async function loadMatchday(requestedWeek = null) {
 
     const response = await fetch(
       `${API_URL}/?type=uitslagen` +
-      `&afdeling=${encodeURIComponent(currentPlayer.afdeling)}` +
+      `&afdeling=${encodeURIComponent(matchdayDivision)}` +
       `&speelweek=${encodeURIComponent(matchdayWeek)}`
     );
 
@@ -1721,139 +1757,98 @@ async function loadMatchday(requestedWeek = null) {
 }
 
 function renderMatchday(matches) {
-  const container =
-    document.getElementById('matchdayContent');
-
-  if (!container) {
-    return;
-  }
-
+  const container = document.getElementById('matchdayContent');
+  if (!container) return;
   container.innerHTML = '';
-
   if (!matches.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <strong>Geen uitslagen gevonden</strong>
-        <p>Voor deze speelweek zijn nog geen wedstrijden ingevuld.</p>
-      </div>
-    `;
+    container.innerHTML = '<div class="empty-state"><strong>Geen uitslagen gevonden</strong><p>Voor deze speelweek zijn nog geen wedstrijden ingevuld.</p></div>';
     return;
   }
+
+  const leesGetal = value => {
+    if (value === null || value === undefined || value === '') return NaN;
+    return Number(String(value).replace(',', '.'));
+  };
 
   matches.forEach(match => {
     const card = document.createElement('article');
-    card.className = 'matchday-match';
-
-    if (
-      normalize(match.thuisploeg) === normalize(currentPlayer.team) ||
-      normalize(match.uitploeg) === normalize(currentPlayer.team)
-    ) {
+    card.className = 'matchday-match matchday-table-card';
+    if (matchdayDivision === currentPlayer.afdeling &&
+        (normalize(match.thuisploeg) === normalize(currentPlayer.team) ||
+         normalize(match.uitploeg) === normalize(currentPlayer.team))) {
       card.classList.add('my-match');
     }
 
-    const partijen = Array.isArray(match.partijen)
-      ? match.partijen
-      : [];
-
-    const rows = partijen.map((partij, index) => {
+    const partijen = Array.isArray(match.partijen) ? match.partijen : [];
+    const rows = partijen.map(partij => {
       const thuis = partij.thuis || {};
       const uit = partij.uit || {};
+      const thuisGsp = leesGetal(thuis.gsp);
+      const uitGsp = leesGetal(uit.gsp);
+      const thuisTsp = leesGetal(thuis.tsp);
+      const uitTsp = leesGetal(uit.tsp);
+      const geldig = thuisTsp > 0 && uitTsp > 0 &&
+        Number.isFinite(thuisGsp) && Number.isFinite(uitGsp);
+      const thuisWint = geldig && thuisGsp >= thuisTsp && uitGsp < uitTsp;
+      const uitWint = geldig && uitGsp >= uitTsp && thuisGsp < thuisTsp;
+      const gelijk = geldig && thuisGsp >= thuisTsp && uitGsp >= uitTsp;
+      const kleurThuis = gelijk ? 'matchday-cell-draw' : thuisWint ? 'matchday-cell-win' : uitWint ? 'matchday-cell-loss' : '';
+      const kleurUit = gelijk ? 'matchday-cell-draw' : uitWint ? 'matchday-cell-win' : thuisWint ? 'matchday-cell-loss' : '';
       const brt = partij.brt ?? '–';
-
-      const thuisGsp = Number(thuis.gsp);
-      const uitGsp = Number(uit.gsp);
-      const heeftUitslag =
-        Number.isFinite(thuisGsp) &&
-        Number.isFinite(uitGsp) &&
-        thuisGsp !== uitGsp;
-
-      const thuisResultClass =
-        heeftUitslag
-          ? (thuisGsp > uitGsp ? 'matchday-player-win' : 'matchday-player-loss')
-          : '';
-
-      const uitResultClass =
-        heeftUitslag
-          ? (uitGsp > thuisGsp ? 'matchday-player-win' : 'matchday-player-loss')
-          : '';
-
       return `
-        <div class="matchday-game-row">
-          <div class="matchday-player matchday-player-home ${thuisResultClass}">
-            <strong>${esc(thuis.naam || '–')}</strong>
-            <div class="matchday-player-stats">
-              <span><small>HR</small>${esc(thuis.hr ?? '–')}</span>
-              <span><small>MOY</small>${formatMoyenne(thuis.moyenne)}</span>
-              <span><small>TSP</small>${esc(thuis.tsp ?? '–')}</span>
-              <span><small>PTN</small>${formatStandNumber(thuis.ptn)}</span>
-              <span class="matchday-gsp"><small>GSP</small>${esc(thuis.gsp ?? '–')}</span>
-            </div>
-          </div>
-
-          <div class="matchday-brt">
-            <small>BRT</small>
-            <strong>${esc(brt)}</strong>
-          </div>
-
-          <div class="matchday-player matchday-player-away ${uitResultClass}">
-            <strong>${esc(uit.naam || '–')}</strong>
-            <div class="matchday-player-stats">
-              <span class="matchday-gsp"><small>GSP</small>${esc(uit.gsp ?? '–')}</span>
-              <span><small>PTN</small>${formatStandNumber(uit.ptn)}</span>
-              <span><small>TSP</small>${esc(uit.tsp ?? '–')}</span>
-              <span><small>MOY</small>${formatMoyenne(uit.moyenne)}</span>
-              <span><small>HR</small>${esc(uit.hr ?? '–')}</span>
-            </div>
-          </div>
-        </div>
-      `;
+        <tr>
+          <td>${esc(thuis.hr ?? '–')}</td>
+          <td>${formatMoyenne(thuis.moyenne)}</td>
+          <td class="matchday-name">${esc(thuis.naam || '–')}</td>
+          <td>${esc(thuis.tsp ?? '–')}</td>
+          <td>${formatStandNumber(thuis.ptn)}</td>
+          <td class="matchday-gsp-cell ${kleurThuis}">${esc(thuis.gsp ?? '–')}</td>
+          <td class="matchday-brt-cell">${esc(brt)}</td>
+          <td class="matchday-gsp-cell ${kleurUit}">${esc(uit.gsp ?? '–')}</td>
+          <td>${formatStandNumber(uit.ptn)}</td>
+          <td>${esc(uit.tsp ?? '–')}</td>
+          <td class="matchday-name">${esc(uit.naam || '–')}</td>
+          <td>${formatMoyenne(uit.moyenne)}</td>
+          <td>${esc(uit.hr ?? '–')}</td>
+        </tr>`;
     }).join('');
 
     card.innerHTML = `
-      <button
-        class="matchday-match-head"
-        type="button"
-        aria-label="Bekijk wedstrijddetails"
-      >
-        <span class="matchday-team matchday-team-home">
-          ${esc(match.thuisploeg)}
-        </span>
-
-        <span class="matchday-score">
-          ${esc(match.thuisPunten ?? '–')}
-          <b>–</b>
-          ${esc(match.uitPunten ?? '–')}
-        </span>
-
-        <span class="matchday-team matchday-team-away">
-          ${esc(match.uitploeg)}
-        </span>
-      </button>
-
-      <div class="matchday-games">
-        ${
-          rows || `
-            <div class="matchday-no-games">
-              Nog geen individuele partijen ingevuld.
-            </div>
-          `
-        }
+      <div class="matchday-table-scroll" tabindex="0" aria-label="Wedstrijdtabel, horizontaal verschuifbaar">
+        <table class="matchday-compact-table">
+          <colgroup>
+            <col class="matchday-col-hr"><col class="matchday-col-moy"><col class="matchday-col-name">
+            <col class="matchday-col-tsp"><col class="matchday-col-ptn"><col class="matchday-col-gsp">
+            <col class="matchday-col-brt"><col class="matchday-col-gsp"><col class="matchday-col-ptn">
+            <col class="matchday-col-tsp"><col class="matchday-col-name"><col class="matchday-col-moy"><col class="matchday-col-hr">
+          </colgroup>
+          <thead>
+            <tr class="matchday-table-teams">
+              <th colspan="5" class="matchday-team-home">${esc(match.thuisploeg)}</th>
+              <th class="matchday-team-score">${esc(match.thuisPunten ?? '–')}</th>
+              <th class="matchday-match-id"></th>
+              <th class="matchday-team-score">${esc(match.uitPunten ?? '–')}</th>
+              <th colspan="5" class="matchday-team-away">${esc(match.uitploeg)}</th>
+            </tr>
+            <tr class="matchday-table-labels">
+              <th>HR</th><th>MOY</th><th>NAAM</th><th>TSP</th><th>PTN</th><th>GSP</th>
+              <th>BRT</th><th>GSP</th><th>PTN</th><th>TSP</th><th>NAAM</th><th>MOY</th><th>HR</th>
+            </tr>
+          </thead>
+          <tbody>${rows || '<tr><td colspan="13">Nog geen individuele partijen ingevuld.</td></tr>'}</tbody>
+        </table>
       </div>
+      <button class="matchday-detail-link" type="button">Bekijk wedstrijddetails ›</button>
     `;
-
-    const head = card.querySelector('.matchday-match-head');
-
-    if (head && match.ontmoetingId) {
-      head.addEventListener('click', () => {
-        openMatchDetail(
-          currentPlayer.afdeling,
-          matchdayWeek,
-          match.ontmoetingId,
-          'matchday'
-        );
-      });
+    pasMatchdayTabelAanSchermAan(card);
+    const button = card.querySelector('.matchday-detail-link');
+    if (match.ontmoetingId) {
+      button.addEventListener('click', () => openMatchDetail(
+        matchdayDivision, matchdayWeek, match.ontmoetingId, 'matchday'
+      ));
+    } else {
+      button.hidden = true;
     }
-
     container.appendChild(card);
   });
 }
@@ -1877,6 +1872,27 @@ function formatDate(value) {
   );
 }
 
+
+/* Verklein alleen de Speeldag-tabellen zodat alle kolommen op mobiel zichtbaar zijn. */
+function pasMatchdayTabelAanSchermAan(card) {
+  const container = card.querySelector('.matchday-table-scroll');
+  const tabel = container?.querySelector('.matchday-compact-table');
+  if (!container || !tabel) return;
+  const pasAan = () => {
+    const beschikbareBreedte = container.clientWidth;
+    if (!beschikbareBreedte) return;
+    const tabelBreedte = 1020;
+    const schaal = Math.min(1, beschikbareBreedte / tabelBreedte);
+    tabel.style.zoom = String(schaal);
+  };
+  pasAan();
+  if (typeof ResizeObserver !== 'undefined') {
+    const observer = new ResizeObserver(pasAan);
+    observer.observe(container);
+  } else {
+    window.addEventListener('resize', pasAan, { passive: true });
+  }
+}
 
 function buildSeriesButtons() {
   renderSeriesSelector();
@@ -2829,7 +2845,7 @@ function openSeries(division) {
 
     <div class="series-actions">
       <button
-        class="primary-button"
+        class="secondary-button"
         id="seriesStandButton"
         type="button"
       >
@@ -2852,19 +2868,20 @@ function openSeries(division) {
     .getElementById('seriesBackButton')
     .addEventListener('click', renderSeriesSelector);
 
-  document
-    .getElementById('seriesStandButton')
-    .addEventListener(
-      'click',
-      () => loadSeriesStand(division)
-    );
+  const standButton = document.getElementById('seriesStandButton');
+  const calendarButton = document.getElementById('seriesCalendarButton');
 
-  document
-    .getElementById('seriesCalendarButton')
-    .addEventListener(
-      'click',
-      () => loadSeriesCalendar(division)
-    );
+  standButton.addEventListener('click', () => {
+    standButton.className = 'primary-button';
+    calendarButton.className = 'secondary-button';
+    loadSeriesStand(division);
+  });
+
+  calendarButton.addEventListener('click', () => {
+    standButton.className = 'secondary-button';
+    calendarButton.className = 'primary-button';
+    loadSeriesCalendar(division);
+  });
 }
 
 
