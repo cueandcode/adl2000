@@ -1840,7 +1840,6 @@ function renderMatchday(matches) {
       </div>
       <button class="matchday-detail-link" type="button">Bekijk wedstrijddetails ›</button>
     `;
-    pasMatchdayTabelAanSchermAan(card);
     const button = card.querySelector('.matchday-detail-link');
     if (match.ontmoetingId) {
       button.addEventListener('click', () => openMatchDetail(
@@ -1850,6 +1849,7 @@ function renderMatchday(matches) {
       button.hidden = true;
     }
     container.appendChild(card);
+    pasMatchdayTabelAanSchermAan(card);
   });
 }
 

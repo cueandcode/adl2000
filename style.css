@@ -6039,3 +6039,33 @@ button {
   border-color: #08783f;
   color: #fff;
 }
+
+
+/* Speeldag: volledige cijfers behouden bij verkleining op gsm.
+   De tabel blijft 1020px breed en wordt als geheel geschaald. */
+#matchdayScreen .matchday-compact-table {
+  width: 1020px;
+  min-width: 1020px;
+  max-width: none;
+  table-layout: fixed;
+}
+#matchdayScreen .matchday-col-hr { width: 28px; }
+#matchdayScreen .matchday-col-moy { width: 50px; }
+#matchdayScreen .matchday-col-name { width: 265px; }
+#matchdayScreen .matchday-col-tsp { width: 34px; }
+#matchdayScreen .matchday-col-ptn { width: 38px; }
+#matchdayScreen .matchday-col-gsp { width: 80px; }
+#matchdayScreen .matchday-col-brt { width: 30px; }
+#matchdayScreen .matchday-compact-table th,
+#matchdayScreen .matchday-compact-table td {
+  text-overflow: clip;
+}
+#matchdayScreen .matchday-compact-table td:not(.matchday-name),
+#matchdayScreen .matchday-compact-table .matchday-team-score {
+  overflow: visible;
+  white-space: nowrap;
+}
+#matchdayScreen .matchday-compact-table .matchday-team-score {
+  font-size: 13px;
+  padding: 4px 1px;
+}
