@@ -4426,9 +4426,9 @@ button {
 
   .app {
 
-    width: min(100%, 1180px);
+    width: min(100%, 1600px);
 
-    max-width: 1180px;
+    max-width: 1600px;
 
   }
 
@@ -4442,7 +4442,7 @@ button {
 
   .bottom-nav {
 
-    width: min(100%, 1180px);
+    width: min(100%, 1600px);
 
   }
 
@@ -6142,4 +6142,21 @@ button {
 #matchdayScreen .matchday-table-labels th {
   font-size: 11px;
   padding: 5px 1px;
+}
+
+
+/* =========================================================
+   SPEELDAG - VOLLEDIGE BREEDTE OP LAPTOP / DESKTOP
+   Gsm-weergave blijft ongewijzigd.
+   ========================================================= */
+@media (min-width: 900px) {
+  #matchdayScreen .matchday-compact-table {
+    width: 100% !important;
+    min-width: 744px !important;
+    max-width: none !important;
+  }
+  #matchdayScreen .matchday-table-scroll {
+    width: 100%;
+    overflow-x: auto;
+  }
 }
